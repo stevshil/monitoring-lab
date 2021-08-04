@@ -19,6 +19,9 @@ The applications that will be monitored are;
 When using the docker-compose system you can point your web browser at the following ports;
 * PetClinic
   - http://localhost:1080
+* Moodle
+  - http://localhost:1180
+  - http://localhost:8443
 * Prometheus
   - Metrics
     - http://localhost:9090/metrics
