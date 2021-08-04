@@ -3,6 +3,8 @@
 # This script is used to get the binaries required to build
 filesdir=containers/itrs/files/ITRS
 
+[[ ! -d $filesdir ]] && mkdir $filesdir
+
 if ! which wget >/dev/null 2>&1
 then
   sudo yum -y install wget
