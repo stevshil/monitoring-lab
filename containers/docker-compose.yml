@@ -29,6 +29,10 @@ services:
       dockerfile: Dockerfile
     image: monitor/moodle
     container_name: moodle
+    volumes:
+      - type: volume
+        source: moodle-data
+        target: /bitnami/moodledata
     environment:
       - MOODLE_USERNAME=admin
       - MOODLE_PASSWORD=admin123
