@@ -20,7 +20,8 @@ fi"""
         sh """cd openshift
 oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
 oc project ${projectName}
-oc apply -f dbmon-imagestream.yaml"""
+oc apply -f dbmon-imagestream.yaml
+oc import-image dbmon --from=docker.io/prom/mysqld-exporter:v0.13.0 --confirm"""
         }
     }
     stage('Deploy dbmon Container To Openshift') {

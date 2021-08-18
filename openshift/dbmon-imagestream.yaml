@@ -12,7 +12,7 @@ spec:
     - annotations: null
       from:
         kind: DockerImage
-        name: prom/mysqld-exporter:v0.13.0
+        name: prom/mysqld-exporter
       generation: null
       importPolicy: {}
       name: ""
