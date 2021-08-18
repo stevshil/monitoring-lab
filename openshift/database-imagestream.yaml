@@ -12,7 +12,7 @@ spec:
     - annotations: null
       from:
         kind: DockerImage
-        name: monitor/database
+        name: database
       generation: null
       importPolicy: {}
       name: ""
