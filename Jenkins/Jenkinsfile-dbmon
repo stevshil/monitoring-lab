@@ -15,28 +15,20 @@ then
 fi"""
       }
     }
-    stage('Build add or update database configuration') {
+    stage('Build add or update dbmon configuration') {
       steps {
         sh """cd openshift
 oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
 oc project ${projectName}
-oc apply -f database-imagestream.yaml
-oc apply -f database-build.yaml
-oc apply -f db-data-persistentvolumeclaim.yaml"""
+oc apply -f dbmon-imagestream.yaml"""
         }
     }
-    stage('Build database image') {
-      steps {
-        sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
-oc start-build database"""
-      }
-    }
-    stage('Deploy database Container To Openshift') {
+    stage('Deploy dbmon Container To Openshift') {
       steps {
         sh """cd openshift
 oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
 oc project ${projectName}
-oc apply -f database-deploymentconfig.yaml"""
+oc apply -f dbmon-deploymentconfig.yaml"""
       }
     }
   }

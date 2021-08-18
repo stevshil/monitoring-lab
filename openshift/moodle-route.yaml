@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Route
 metadata:
-  name: petclinic
+  name: moodle
 spec:
-  host: petclinic
+  host: moodle
   port:
     targetPort: '8080'
   to:
     kind: Service
-    name: petclinic
+    name: moodle

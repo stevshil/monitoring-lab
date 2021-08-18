@@ -12,7 +12,7 @@ spec:
     - annotations: null
       from:
         kind: DockerImage
-        name: monitor/petclinic
+        name: petclinic
       generation: null
       importPolicy: {}
       name: ""

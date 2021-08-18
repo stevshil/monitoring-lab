@@ -12,7 +12,7 @@ spec:
     - annotations: null
       from:
         kind: DockerImage
-        name: monitor/prometheus
+        name: prometheus
       generation: null
       importPolicy: {}
       name: ""
