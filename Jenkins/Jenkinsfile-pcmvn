@@ -1,0 +1,28 @@
+pipeline {
+  agent any
+  parameters {
+    string(name: 'projectName', defaultValue: 'psapp', description: 'Project name to create or target for update')
+  }
+
+  stages {
+    stage('Create project') {
+    steps {
+        sh """cd openshift
+oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+if ! oc project ${projectName}
+then
+  oc new-project ${projectName}
+fi"""
+      }
+    }
+    stage('Create Maven image stream and get image') {
+      steps {
+        sh """cd openshift
+oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+oc project ${projectName}
+oc apply -f pcmvn-imagestream.yaml
+oc import-image maven --from=docker.io/maven:3.6.3-jdk-11 --confirm"""
+        }
+    }
+  }
+}
