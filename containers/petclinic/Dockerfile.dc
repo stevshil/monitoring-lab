@@ -4,7 +4,7 @@ WORKDIR /usr/src/mymaven
 RUN mvn -Dmaven.test.skip=true package
 RUN ls /usr/src/mymaven/target
 
-FROM openjdk:9
+FROM openjdk:11
 RUN mkdir /app
 RUN apt-get -y update
 RUN apt-get -y install netcat
