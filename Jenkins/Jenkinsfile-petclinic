@@ -15,6 +15,15 @@ then
 fi"""
       }
     }
+    stage('Create Maven image stream and get image') {
+      steps {
+        sh """cd openshift
+oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+oc project ${projectName}
+oc apply -f pcmvn-imagestream.yaml
+oc import-image maven --from=docker.io/maven:3.6.3-jdk-11 --confirm"""
+      }
+    }
     stage('Build add or update Petclinic configuration') {
       steps {
         sh """cd openshift
