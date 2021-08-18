@@ -2,16 +2,15 @@ pipeline {
   agent any
   parameters {
     string(name: 'projectName', defaultValue: 'psapp', description: 'Project name to launch containers into')
-    string(name: 'version', defaultValue: 'latest', description: 'Version number for image')
   }
 
   stages {
      stage('Create project app') {
           dir('openshift') {
             sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
-                  if ! oc project app
+                  if ! oc project ${projectName} 
                   then
-	            oc new-project app"
+	            oc new-project ${projectName}
                   fi"""
           }
      }
