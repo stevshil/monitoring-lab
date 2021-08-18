@@ -6,32 +6,29 @@ pipeline {
 
   stages {
     stage('Create project') {
-      steps {
-        dir('openshift') {
-          sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
-                if ! oc project ${projectName}
-                then
-            oc new-project ${projectName}
-                fi"""
-        }
+    steps {
+        sh """cd openshift
+oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
+if ! oc project ${projectName}
+then
+  oc new-project ${projectName}
+fi"""
       }
     }
     stage('Build database docker image') {
       steps {
-        dir('openshift') {
-        sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
-              oc apply -f database-imagestream.yaml
-              oc apply -f database-build.yaml
-              oc apply -f db-data-persistentvolumeclaim.yaml"""
+        sh """cd openshift
+oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
+oc apply -f database-imagestream.yaml
+oc apply -f database-build.yaml
+oc apply -f db-data-persistentvolumeclaim.yaml"""
         }
-      }
     }
     stage('Deploy Container To Openshift') {
       steps {
-        dir('openshift') {
-        sh "oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
-            oc apply -f database-deploymentconfig.yaml"""
-        }
+        sh """cd openshift
+oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
+oc apply -f database-deploymentconfig.yaml"""
       }
     }
   }
