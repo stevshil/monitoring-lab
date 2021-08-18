@@ -17,6 +17,7 @@ services:
   petclinic:
     build:
       context: petclinic
+      dockerfile: Dockerfile.dc
     image: monitor/petclinic
     container_name: petclinic
     environment:

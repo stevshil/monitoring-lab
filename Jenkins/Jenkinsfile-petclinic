@@ -15,13 +15,23 @@ then
 fi"""
       }
     }
-    stage('Create Maven image stream and get image') {
+    stage('Clone PetClinic project') {
+    steps {
+            checkout([$class: 'GitSCM',
+                branches: [[name: '*/master']],
+                extensions: [
+                  [$class: 'RelativeTargetDirectory', relativeTargetDir: 'petclinicapp']
+                ],
+                userRemoteConfigs: [[url: 'https://github.com/spring-projects/spring-petclinic.git']]
+              ])
+      }
+    }
+    stage('Compile PetClinic') {
       steps {
-        sh """cd openshift
-oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
-oc project ${projectName}
-oc apply -f pcmvn-imagestream.yaml
-oc import-image maven --from=docker.io/maven:3.6.3-jdk-11 --confirm"""
+        dir('petclinicapp') {
+          sh """mvn -Dmaven.test.skip=true package
+cp target/*.jar ../containers/petclinic"""
+        }
       }
     }
     stage('Build add or update Petclinic configuration') {
@@ -30,7 +40,7 @@ oc import-image maven --from=docker.io/maven:3.6.3-jdk-11 --confirm"""
 oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
 oc project ${projectName}
 oc apply -f petclinic-imagestream.yaml
-oc apply -f petclinic-build.yaml
+# oc apply -f petclinic-build.yaml
 oc apply -f petclinic-service.yaml
 oc apply -f petclinic-route.yaml"""
         }
@@ -38,7 +48,8 @@ oc apply -f petclinic-route.yaml"""
     stage('Build Petclinic image') {
       steps {
         sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
-oc start-build petclinic"""
+cd containers/petclinic
+oc start-build petclinic --from-dir . --follow"""
       }
     }
     stage('Deploy PetcClinic Container To Openshift') {
