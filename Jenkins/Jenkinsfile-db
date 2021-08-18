@@ -6,6 +6,7 @@ pipeline {
 
   stages {
    stage('Create project app') {
+      steps {
         dir('openshift') {
           sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
                 if ! oc project ${projectName}
@@ -13,6 +14,7 @@ pipeline {
             oc new-project ${projectName}
                 fi"""
         }
+      }
    }
    stage('Build database docker image') {
       steps {
@@ -26,10 +28,11 @@ pipeline {
     }
     stage('Deploy Container To Openshift') {
       steps {
-          dir('openshift') {
-            sh "oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
-                oc apply -f database-deploymentconfig.yaml"""
-          }
+        dir('openshift') {
+          sh "oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
+              oc apply -f database-deploymentconfig.yaml"""
+        }
       }
     }
+  }
 }
