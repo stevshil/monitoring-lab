@@ -1,4 +1,4 @@
-FROM docker.io/maven:3.6.3-jdk-11 AS compile
+FROM maven:3.6.3-jdk-11 AS compile
 RUN git clone https://github.com/spring-projects/spring-petclinic.git /usr/src/mymaven
 WORKDIR /usr/src/mymaven
 RUN mvn -Dmaven.test.skip=true package
