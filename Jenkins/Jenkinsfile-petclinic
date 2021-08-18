@@ -29,7 +29,7 @@ fi"""
     stage('Compile PetClinic') {
       steps {
         dir('petclinicapp') {
-          sh """mvn -Dmaven.test.skip=true package
+          sh """docker run -it --rm -v "$PWD":/usr/src/mymaven -v "$PWD/target:/usr/src/mymaven/target" -w /usr/src/mymaven maven mvn -Dmaven.test.skip=true package
 cp target/*.jar ../containers/petclinic"""
         }
       }
