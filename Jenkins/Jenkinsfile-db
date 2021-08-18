@@ -19,6 +19,7 @@ fi"""
       steps {
         sh """cd openshift
 oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+oc project ${projectName}
 oc apply -f database-imagestream.yaml
 oc apply -f database-build.yaml
 oc apply -f db-data-persistentvolumeclaim.yaml"""
@@ -28,6 +29,7 @@ oc apply -f db-data-persistentvolumeclaim.yaml"""
       steps {
         sh """cd openshift
 oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+oc project ${projectName}
 oc apply -f database-deploymentconfig.yaml"""
       }
     }
