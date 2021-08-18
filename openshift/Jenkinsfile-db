@@ -1,0 +1,37 @@
+pipeline {
+  agent any
+  parameters {
+    string(name: 'projectName', defaultValue: 'psapp', description: 'Project name to launch containers into')
+    string(name: 'version', defaultValue: 'latest', description: 'Version number for image')
+  }
+
+  stages {
+     stage('Create project app') {
+          dir('openshift') {
+            sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
+                  if ! oc project app
+                  then
+	            oc new-project app"
+                  fi"""
+          }
+     }
+     stage('Build database docker image') {
+        steps {
+          dir('openshift') {
+            sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
+                  oc apply -f database-imagestream.yaml
+                  oc apply -f database-build.yaml
+                  oc apply -f db-data-persistentvolumeclaim.yaml"""
+          }
+        }
+    }
+    stage('Deploy Container To Openshift') {
+      steps {
+          dir('openshift') {
+            sh "oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true"
+                oc apply -f database-deploymentconfig.yaml"""
+          }
+      }
+    }
+  }
+}
