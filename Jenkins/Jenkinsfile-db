@@ -15,7 +15,7 @@ then
 fi"""
       }
     }
-    stage('Build database docker image') {
+    stage('Build add or update database configuration') {
       steps {
         sh """cd openshift
 oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
@@ -24,6 +24,12 @@ oc apply -f database-imagestream.yaml
 oc apply -f database-build.yaml
 oc apply -f db-data-persistentvolumeclaim.yaml"""
         }
+    }
+    stage('Build database image') {
+      steps {
+        sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+oc start-build database"""
+      }
     }
     stage('Deploy Container To Openshift') {
       steps {
