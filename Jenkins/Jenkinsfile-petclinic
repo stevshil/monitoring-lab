@@ -50,7 +50,7 @@ oc apply -f petclinic-route.yaml"""
         sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
 find .
 cd containers/petclinic
-oc new-build --strategy docker --binary --docker-image openjdk:9 --name petclinic
+oc new-build --strategy docker --binary --docker-image openjdk:11 --name petclinic
 oc start-build petclinic --from-dir . --follow"""
       }
     }
