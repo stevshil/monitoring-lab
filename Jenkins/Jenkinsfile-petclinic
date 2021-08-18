@@ -48,6 +48,7 @@ oc apply -f petclinic-route.yaml"""
     stage('Build Petclinic image') {
       steps {
         sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+find .
 cd containers/petclinic
 oc start-build petclinic --from-dir . --follow"""
       }
