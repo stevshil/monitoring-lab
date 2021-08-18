@@ -18,7 +18,7 @@ fi"""
     stage('Clone PetClinic project') {
     steps {
             checkout([$class: 'GitSCM',
-                branches: [[name: '*/master']],
+                branches: [[name: '*/main']],
                 extensions: [
                   [$class: 'RelativeTargetDirectory', relativeTargetDir: 'petclinicapp']
                 ],
