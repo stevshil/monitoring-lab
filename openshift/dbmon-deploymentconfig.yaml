@@ -51,7 +51,7 @@ spec:
           - dbmon
         from:
           kind: ImageStreamTag
-          name: dbmon:v0.13.0
+          name: dbmon
       type: ImageChange
 status:
   availableReplicas: 0
