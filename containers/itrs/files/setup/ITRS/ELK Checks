@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--Edited using Gateway Setup Editor version GA5.8.1-210615 at 2021-08-06 15:18:31 by Administrator on EC2AMAZ-8RI616P-->
+<!-- Gateway-created setup include file for user ActiveConsole1 at 172.31.23.230 -->
+<gateway compatibility="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.itrsgroup.com/GA5.8.2-210629/gateway.xsd">
+	<types>
+		<type name="ELK">
+			<sampler ref="Elasticsearch"/>
+			<sampler ref="Kibana"/>
+		</type>
+	</types>
+	<samplers>
+		<sampler name="Elasticsearch">
+			<plugin>
+				<processes>
+					<processes>
+						<process>
+							<data>
+								<alias>
+									<data>elasticsearch</data>
+								</alias>
+							</data>
+						</process>
+					</processes>
+				</processes>
+			</plugin>
+		</sampler>
+		<sampler name="Kibana">
+			<plugin>
+				<processes>
+					<processes>
+						<process>
+							<data>
+								<alias>
+									<data>kibana</data>
+								</alias>
+							</data>
+						</process>
+					</processes>
+				</processes>
+			</plugin>
+		</sampler>
+	</samplers>
+</gateway>

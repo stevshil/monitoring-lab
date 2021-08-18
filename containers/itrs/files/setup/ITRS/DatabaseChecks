@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!--Edited using Gateway Setup Editor version GA5.8.1-210615 at 2021-08-04 13:02:12 by Administrator on EC2AMAZ-8RI616P-->
+<!--Edited using Gateway Setup Editor version GA5.8.1-210615 at 2021-08-08 11:15:32 by Administrator on EC2AMAZ-8RI616P-->
 <!-- Gateway-created setup include file for user ActiveConsole1 at 172.31.23.230 -->
 <gateway compatibility="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.itrsgroup.com/GA5.8.2-210629/gateway.xsd">
 	<types>
 		<type name="Database Checks">
 			<sampler ref="Database Tables"/>
+			<sampler ref="DB Disk Used" disabled="true"/>
+			<sampler ref="Docker Volume Usage"/>
 		</type>
 	</types>
 	<samplers>
@@ -17,7 +19,19 @@
 								<data>checkpctables</data>
 							</name>
 							<sql>
-								<data>show tables;</data>
+								<data>use information_schema;
+select TABLE_NAME, TABLE_NAME  
+from tables where table_schema=&apos;petclinic&apos;;</data>
+							</sql>
+						</query>
+						<query>
+							<name>
+								<data>checkmoodletables</data>
+							</name>
+							<sql>
+								<data>use information_schema;
+select TABLE_NAME, TABLE_NAME  
+from tables where table_schema=&apos;moodle&apos;;</data>
 							</sql>
 						</query>
 					</queries>
@@ -27,9 +41,6 @@
 								<var-serverName>
 									<data>172.31.14.94</data>
 								</var-serverName>
-								<var-databaseName>
-									<data>petclinic</data>
-								</var-databaseName>
 							</mysql>
 						</database>
 						<var-userName>
@@ -42,5 +53,67 @@
 				</sql-toolkit>
 			</plugin>
 		</sampler>
+		<sampler name="DB Disk Used">
+			<plugin>
+				<toolkit>
+					<samplerScript>
+						<data>/usr/bin/du -sh `/usr/bin/docker volume inspect containers_db-data | /usr/bin/grep Mountpoint | /usr/bin/awk &apos;{print $2}&apos; | /usr/bin/sed -e &apos;s/&quot;//g&apos; -e &apos;s/,//&apos;` | /usr/bin/awk &apos;BEGIN{OFS=&quot;,&quot;; print &quot;Volume,Size&quot;}{print $2,$1}&apos;</data>
+					</samplerScript>
+				</toolkit>
+			</plugin>
+		</sampler>
+		<sampler name="Docker Volume Usage">
+			<plugin>
+				<toolkit>
+					<samplerScript>
+						<data>/usr/bin/du -sh /var/lib/docker/volumes/* | /usr/bin/awk &apos;BEGIN{OFS=&quot;,&quot;; print &quot;Volume,Size&quot;}{print $2,$1}&apos;</data>
+					</samplerScript>
+				</toolkit>
+			</plugin>
+		</sampler>
 	</samplers>
+	<rules>
+		<rule name="Docker Volume Space">
+			<targets>
+				<target>/geneos/gateway[(@name=&quot;ip-172-31-11-238.ap-southeast-1.compute.internal&quot;)]/directory/probe[(@name=&quot;App Server&quot;)]/managedEntity[(@name=&quot;Application Server&quot;)]/sampler[(@name=&quot;Docker Volume Usage&quot;)][(@type=&quot;Database Checks&quot;)]/dataview[(@name=&quot;Docker Volume Usage&quot;)]/rows/row/cell[(@column=&quot;Size&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<gt>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<integer>500</integer>
+					</gt>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+					<if>
+						<gt>
+							<dataItem>
+								<property>@value</property>
+							</dataItem>
+							<integer>300</integer>
+						</gt>
+						<transaction>
+							<update>
+								<property>state/@severity</property>
+								<severity>warning</severity>
+							</update>
+						</transaction>
+						<transaction>
+							<update>
+								<property>state/@severity</property>
+								<severity>ok</severity>
+							</update>
+						</transaction>
+					</if>
+				</if>
+			</block>
+		</rule>
+	</rules>
 </gateway>
