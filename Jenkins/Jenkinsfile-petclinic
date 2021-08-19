@@ -53,7 +53,7 @@ cd containers/petclinic
 # Delete old build first
 oc delete buildconfigs/petclinic
 oc delete is/petclinic
-os delete is/openjdk
+oc delete is/openjdk
 oc new-build --strategy docker --binary --docker-image openjdk:11 --name petclinic
 oc start-build petclinic --from-dir . --follow"""
       }
