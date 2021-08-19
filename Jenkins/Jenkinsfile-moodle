@@ -22,6 +22,7 @@ oc login https://localhost:8443 --username developer --password developer --inse
 oc project ${projectName}
 oc apply -f moodle-imagestream.yaml
 oc apply -f moodle-build.yaml
+oc apply -f moodle-data-persistentvolumeclaim.yaml
 oc apply -f moodle-service.yaml
 oc apply -f moodle-route.yaml"""
         }

@@ -22,6 +22,7 @@ oc login https://localhost:8443 --username developer --password developer --inse
 oc project ${projectName}
 oc apply -f prometheus-imagestream.yaml
 oc apply -f prometheus-build.yaml
+oc apply -f prom-data-persistentvolumeclaim.yaml
 oc apply -f prometheus-service.yaml
 oc apply -f prometheus-route.yaml"""
         }

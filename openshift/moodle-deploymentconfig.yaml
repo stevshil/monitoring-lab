@@ -43,7 +43,14 @@ spec:
             - containerPort: 8080
             - containerPort: 8443
           resources: {}
+          volumeMounts:
+            - mountPath: /bitnami/moodledata
+              name: moodle-data
       restartPolicy: Always
+      volumes:
+        - name: moodle-data
+          persistentVolumeClaim:
+            claimName: moodle-data
   test: false
   triggers:
     - type: ConfigChange
