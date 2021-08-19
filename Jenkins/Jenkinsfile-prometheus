@@ -24,7 +24,7 @@ oc apply -f prometheus-imagestream.yaml
 oc apply -f prometheus-build.yaml
 oc apply -f prom-data-persistentvolumeclaim.yaml
 oc apply -f prometheus-service.yaml
-oc apply -f prometheus-route.yaml"""
+oc apply -f prometheus-route.yaml || echo 'Route already in place'"""
         }
     }
     stage('Build prometheus image') {

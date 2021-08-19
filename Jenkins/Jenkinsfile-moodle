@@ -24,7 +24,7 @@ oc apply -f moodle-imagestream.yaml
 oc apply -f moodle-build.yaml
 oc apply -f moodle-data-persistentvolumeclaim.yaml
 oc apply -f moodle-service.yaml
-oc apply -f moodle-route.yaml"""
+oc apply -f moodle-route.yaml || echo 'Route already in place'"""
         }
     }
     stage('Build moodle image') {
