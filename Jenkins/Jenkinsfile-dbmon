@@ -29,6 +29,7 @@ oc import-image dbmon --from=docker.io/prom/mysqld-exporter:v0.13.0 --confirm"""
         sh """cd openshift
 oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
 oc project ${projectName}
+oc apply -f dbmon-service.yaml
 oc apply -f dbmon-deploymentconfig.yaml
 oc deploy dc/dbmon"""
       }
