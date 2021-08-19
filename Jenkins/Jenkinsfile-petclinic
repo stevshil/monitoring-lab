@@ -51,9 +51,9 @@ oc apply -f petclinic-route.yaml"""
 find .
 cd containers/petclinic
 # Delete old build first
-oc delete buildconfigs/petclinic
-oc delete is/petclinic
-oc delete is/openjdk
+oc delete buildconfigs/petclinic || echo "Already deleted PC build config"
+oc delete is/petclinic || echo "Already deleted PC image stream"
+oc delete is/openjdk || echo "Already deleted Java image stream"
 oc new-build --strategy docker --binary --docker-image openjdk:11 --name petclinic
 oc start-build petclinic --from-dir . --follow"""
       }
