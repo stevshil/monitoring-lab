@@ -7,9 +7,9 @@ metadata:
   name: dbmon
 spec:
   ports:
-    - name: "db3306"
-      port: 3306
-      targetPort: 3306
+    - name: "dbmon9104"
+      port: 9104
+      targetPort: 9104
   selector:
     io.kompose.service: dbmon
 status:
