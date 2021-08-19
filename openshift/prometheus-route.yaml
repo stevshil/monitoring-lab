@@ -5,7 +5,7 @@ metadata:
 spec:
   host: prometheus
   port:
-    targetPort: '9100'
+    targetPort: '9090'
   to:
     kind: Service
     name: prometheus
