@@ -1,0 +1,19 @@
+pipeline {
+  agent any
+  parameters {
+    string(name: 'projectName', defaultValue: 'psapp', description: 'Project name to create or target for update')
+    choice(name: 'EXISTING', choices: ['yes', 'no'], description: 'Does Moodle database already exist?')
+  }
+
+  stages {
+    stage('Set Moodle Deploy Existing or New') {
+      steps {
+        sh """cd openshift
+oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+oc project ${projectName}
+oc set env dc/moodle MOODLE_SKIP_INSTALL=${EXISTING}
+        """
+      }
+    }
+  }
+}
