@@ -148,3 +148,38 @@ scrape_configs:
     static_configs:
     - targets: ['localhost:9995']
 ```
+
+# OpenShift
+
+For this project to work in OpenShift you will need to allow containers to run as root.  To do this you will need to;
+
+* Grab the current security context;
+  ```
+  oc get scc restricted -o yaml >restricted-scc
+  ```
+* Edit the file restricted-scc and make sure the following are set as follows;
+  ```
+  allowHostDirVolumePlugin: true
+  allowHostIPC: true
+  allowHostNetwork: true
+  allowHostPID: true
+  allowHostPorts: true
+  allowPrivilegedContainer: true
+  ....
+  runAsUser:
+    type: RunAsAny
+  seLinuxContext:
+    type: RunAsAny
+  supplementalGroups:
+    type: RunAsAny
+  ```
+
+This command must be ran as the openshift system:admin user (which should be the default on the server, if not edit the **.kube/config** file and set the **current-context** line to;
+```
+current-context: default/127-0-0-1:8443/system:admin
+```
+Once you have saved the file run the following commands to update;
+```
+oc apply -f restricted-scc-priv
+oc adm policy add-scc-to-group anyuid system:authenticated
+```
