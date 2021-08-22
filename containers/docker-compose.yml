@@ -46,6 +46,7 @@ services:
       - MYSQL_CLIENT_DATABASE_HOST=database
       - MYSQL_CLIENT_DATABASE_ROOT_PASSWORD=petclinic
       - BITNAMI_DEBUG=true
+      - MOODLE_SKIP_INSTALL=no
     ports:
       - 1180:8080
       - 1443:8443
