@@ -7,8 +7,8 @@ metadata:
   name: moodle
 spec:
   ports:
-    - name: "moodle1180"
-      port: 1180
+    - name: "moodle8080"
+      port: 8080
       targetPort: 8080
     - name: "moodle1443"
       port: 1443

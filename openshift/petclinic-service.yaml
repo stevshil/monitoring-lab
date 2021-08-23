@@ -7,8 +7,8 @@ metadata:
   name: petclinic
 spec:
   ports:
-    - name: "pc1080"
-      port: 1080
+    - name: "pc8080"
+      port: 8080
       targetPort: 8080
     - name: "pc9100"
       port: 9100
