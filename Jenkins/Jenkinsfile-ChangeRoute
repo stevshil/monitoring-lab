@@ -1,0 +1,21 @@
+pipeline {
+  agent any
+  parameters {
+    string(name: 'projectName', defaultValue: 'psapp', description: 'Project name to create or target for update')
+    string(name: 'PORT', defaultValue: '8080', description: 'Which port is the container web service?')
+    choice(name: 'SERVICENAME', choices: ['moodle','petclinic'], description: 'Which application do you wish to change the port for')
+  }
+
+  stages {
+    stage('Set Port Number of Web Service') {
+      steps {
+        sh """cd openshift
+oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+oc project ${projectName}
+oc delete route ${SERVICENAME}
+oc expose svc ${SERVICENAME} --name=${SERVICENAME} --port=${PORT}
+        """
+      }
+    }
+  }
+}
