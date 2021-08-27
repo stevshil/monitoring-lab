@@ -11,6 +11,7 @@ spec:
     io.kompose.service: dbclient
   strategy:
     resources: {}
+    type: Recreate
   template:
     metadata:
       creationTimestamp: null
@@ -18,8 +19,8 @@ spec:
         io.kompose.service: dbclient
     spec:
       containers:
-          image: dbclient:latest
-          name: dbclient:latest
+        - image: ' '
+          name: dbclient
           resources: {}
       restartPolicy: Always
   test: false
