@@ -20,6 +20,17 @@ spec:
     spec:
       containers:
         - image: ' '
+          env:
+            - name: DB
+              value: petclinic
+            - name: HOST
+              value: database
+            - name: TIMEOUT
+              value: 30
+            - name: USER
+              value: root
+            - name: PASSWORD
+              value: petclinic
           name: dbclient
           resources: {}
       restartPolicy: Always
