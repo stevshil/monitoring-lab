@@ -21,7 +21,7 @@ fi"""
 oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
 oc project ${projectName}
 oc apply -f dbclient-imagestream.yaml
-oc apply -f dbclient-build.yaml"
+oc apply -f dbclient-build.yaml"""
         }
     }
     stage('Build dbclient image') {
