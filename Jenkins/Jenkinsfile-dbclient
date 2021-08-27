@@ -1,0 +1,42 @@
+pipeline {
+  agent any
+  parameters {
+    string(name: 'projectName', defaultValue: 'psapp', description: 'Project name to create or target for update')
+  }
+
+  stages {
+    stage('Create project') {
+    steps {
+        sh """cd openshift
+oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+if ! oc project ${projectName}
+then
+  oc new-project ${projectName}
+fi"""
+      }
+    }
+    stage('Build add or update dbclient configuration') {
+      steps {
+        sh """cd openshift
+oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+oc project ${projectName}
+oc apply -f dbclient-imagestream.yaml
+oc apply -f dbclient-build.yaml"
+        }
+    }
+    stage('Build dbclient image') {
+      steps {
+        sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+oc start-build dbclient"""
+      }
+    }
+    stage('Deploy dbclient Container To Openshift') {
+      steps {
+        sh """cd openshift
+oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
+oc project ${projectName}
+oc apply -f dbclient-deploymentconfig.yaml"""
+      }
+    }
+  }
+}
