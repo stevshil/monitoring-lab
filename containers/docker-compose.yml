@@ -75,6 +75,12 @@ services:
     container_name: grafana
     ports:
       - 3000:3000
+  dbclient:
+    build:
+      context: dbclient
+    image: monitor/dbclient
+    container_name: dbclient
+
   # itrs:
   #   build:
   #     context: itrs
