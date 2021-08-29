@@ -8,7 +8,7 @@ pipeline {
     stage('Build and Publish DB') {
       steps {
         container(name: 'kaniko') {
-          sh '''/kaniko/executor -f `pwd`/compose/Dockerfile.db -c `pwd` --insecure --skip-tls-verify --cache=false --destination=registry.service:5000/database:${BUILD_NUMBER}'''
+          sh '''/kaniko/executor -f `pwd`/containers/database//Dockerfile.db -c `pwd` --insecure --skip-tls-verify --cache=false --destination=registry.service:5000/database:${BUILD_NUMBER}'''
         }
       }
     }
