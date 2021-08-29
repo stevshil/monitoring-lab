@@ -21,7 +21,7 @@ spec:
   volumes:
   - name: cache-volume
     emptyDir: {}
-""".stripIdent()
+"""
     }
   }
   stages {
