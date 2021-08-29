@@ -1,7 +1,17 @@
 pipeline {
   agent {
-    node {
-      label 'kaniko'
+    kubernetes { 
+      yaml """
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:latest
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - 99d
     }
   }
   stages {
