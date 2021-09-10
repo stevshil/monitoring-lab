@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Start netprobe
+cd /opt/itrs/netprobe
+./netprobe.linux_64 -port 7036 -nopassword &
+
 # Set password
 sed -i "s/^;admin_password =.*/admin_password = ${ADMIN_PW}/" /etc/grafana/grafana.ini
 

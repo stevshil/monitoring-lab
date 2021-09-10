@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!--Edited using Gateway Setup Editor version GA5.8.1-210615 at 2021-08-08 11:05:31 by Administrator on EC2AMAZ-8RI616P-->
+<!--Edited using Gateway Setup Editor version GA5.8.1-210610 at 2021-09-10 18:01:24 by itrs on itrs-VirtualBox-->
 <!-- Gateway-created setup include file for user ActiveConsole1 at 172.31.23.230 -->
 <gateway compatibility="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.itrsgroup.com/GA5.8.2-210629/gateway.xsd">
 	<types>
 		<type name="System Checks">
-			<sampler ref="CPU"/>
-			<sampler ref="System Disk"/>
-			<sampler ref="All Processes"/>
-			<sampler ref="Essential Processes"/>
-			<sampler ref="Check for ERROR"/>
-			<sampler ref="Big files" disabled="true"/>
+			<sampler disabled="false" ref="CPU"/>
+			<sampler disabled="false" ref="System Disk"/>
+			<sampler disabled="false" ref="All Processes"/>
+			<sampler disabled="false" ref="Essential Processes"/>
+			<sampler disabled="false" ref="Check for ERROR"/>
+			<sampler disabled="false" ref="Network Info"/>
+			<sampler disabled="false" ref="AppURLs"/>
+			<sampler disabled="false" ref="Ping Google"/>
+			<sampler ref="Network Connections"/>
 		</type>
 	</types>
 	<samplers>
@@ -74,6 +77,13 @@
 								</alias>
 							</data>
 						</process>
+						<process>
+							<data>
+								<alias>
+									<data>logstash</data>
+								</alias>
+							</data>
+						</process>
 					</processes>
 				</processes>
 			</plugin>
@@ -122,14 +132,14 @@
 										<data>
 											<keys>
 												<key>
-													<setKey>
-														<match>
-															<searchString>
-																<data>ERROR</data>
-															</searchString>
-															<rules>BASIC</rules>
-														</match>
-													</setKey>
+												<setKey>
+												<match>
+												<searchString>
+												<data>ERROR</data>
+												</searchString>
+												<rules>BASIC</rules>
+												</match>
+												</setKey>
 												</key>
 											</keys>
 										</data>
@@ -139,33 +149,6 @@
 						</file>
 					</files>
 				</fkm>
-			</plugin>
-		</sampler>
-		<sampler name="Google DNS">
-			<plugin>
-				<net-ping>
-					<hosts>
-						<data>
-							<host>
-								<ipAddress>
-									<value>8</value>
-									<value>8</value>
-									<value>8</value>
-									<value>8</value>
-								</ipAddress>
-							</host>
-						</data>
-					</hosts>
-				</net-ping>
-			</plugin>
-		</sampler>
-		<sampler name="Big files">
-			<plugin>
-				<toolkit>
-					<samplerScript>
-						<data>/bin/ls -l /etc | /bin/grep -v &apos;^total&apos; | /usr/bin/awk &apos;BEGIN {OFS=&quot;,&quot;;print &quot;Filename,Modes,Link Count,Owner,Group,Size,Date&quot;}{print $9,$1,$2,$3,$4,$5,$6&quot; &quot;$7&quot; &quot;$8}&apos;</data>
-					</samplerScript>
-				</toolkit>
 			</plugin>
 		</sampler>
 		<sampler name="JMX Sample">
@@ -219,5 +202,598 @@
 				</jmx-server>
 			</plugin>
 		</sampler>
+		<sampler name="Network Info">
+			<expectRows>
+				<data>
+					<expectRow>
+						<data>docker0</data>
+					</expectRow>
+				</data>
+			</expectRows>
+			<plugin>
+				<network/>
+			</plugin>
+			<dataviews>
+				<dataview name="EstablishedConnections">
+					<additions>
+						<var-headlines>
+							<data>
+								<headline>
+									<data>establishedCount</data>
+								</headline>
+							</data>
+						</var-headlines>
+					</additions>
+				</dataview>
+			</dataviews>
+		</sampler>
+		<sampler name="AppURLs">
+			<plugin>
+				<web-mon>
+					<host>
+						<data>petclinic</data>
+					</host>
+					<protocol>
+						<http/>
+					</protocol>
+					<scenarioList>
+						<scenario>
+							<name>petclinic</name>
+							<connection>
+								<host>
+									<data>petclinic</data>
+								</host>
+								<port>
+									<data>8080</data>
+								</port>
+								<protocol>
+									<http/>
+								</protocol>
+							</connection>
+							<stages>
+								<stage>
+									<name>Jenkins</name>
+									<url>
+										<data>/owners/find</data>
+									</url>
+									<successCriteria>
+										<responseCodes>
+											<responseCode>200</responseCode>
+										</responseCodes>
+										<response>
+											<expression>
+												<condition ref="Find Owners"/>
+											</expression>
+										</response>
+									</successCriteria>
+								</stage>
+							</stages>
+						</scenario>
+						<scenario>
+							<name>moodle</name>
+							<connection>
+								<host>
+									<data>moodle</data>
+								</host>
+								<port>
+									<data>8080</data>
+								</port>
+								<protocol>
+									<http/>
+								</protocol>
+							</connection>
+							<stages>
+								<stage>
+									<name>moodle</name>
+									<url>
+										<data/>
+									</url>
+									<successCriteria>
+										<responseCodes>
+											<responseCode>200</responseCode>
+										</responseCodes>
+										<response>
+											<expression>
+												<condition ref="moodle"/>
+											</expression>
+										</response>
+									</successCriteria>
+								</stage>
+							</stages>
+						</scenario>
+					</scenarioList>
+				</web-mon>
+			</plugin>
+		</sampler>
+		<sampler name="Ping Google">
+			<sampleInterval>
+				<data>120</data>
+			</sampleInterval>
+			<expectRows>
+				<data>
+					<expectRow>
+						<data>www.google.com</data>
+					</expectRow>
+				</data>
+			</expectRows>
+			<plugin>
+				<net-ping>
+					<hosts>
+						<data>
+							<host>
+								<name>
+									<data>www.google.com</data>
+								</name>
+							</host>
+						</data>
+					</hosts>
+				</net-ping>
+			</plugin>
+		</sampler>
+		<sampler name="Network Connections">
+			<expectRows>
+				<data>
+					<expectRow>
+						<data>:22-</data>
+					</expectRow>
+				</data>
+			</expectRows>
+			<plugin>
+				<tcp-links>
+					<localPorts>
+						<port>
+							<data>:22</data>
+						</port>
+					</localPorts>
+					<nameContents>
+						<showLocalAddress>
+							<data>false</data>
+						</showLocalAddress>
+						<showLocalPort>
+							<data>true</data>
+						</showLocalPort>
+						<showRemoteAddress>
+							<data>false</data>
+						</showRemoteAddress>
+						<showRemotePort>
+							<data>false</data>
+						</showRemotePort>
+					</nameContents>
+				</tcp-links>
+			</plugin>
+		</sampler>
 	</samplers>
+	<actions>
+		<action name="Restart Jenkins">
+			<script>
+				<exeFile>/usr/sbin/service</exeFile>
+				<arguments>
+					<data>jenkins start</data>
+				</arguments>
+				<runLocation>netprobe</runLocation>
+			</script>
+		</action>
+	</actions>
+	<rules>
+		<rule name="CPU Over Used">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;CPU&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;CPU&quot;)]/rows/row/cell[(@column=&quot;percentUtilisation&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<gt>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<integer>90</integer>
+					</gt>
+					<transaction>
+						<delay unit="samples">3</delay>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+					<if>
+						<gt>
+							<dataItem>
+								<property>@value</property>
+							</dataItem>
+							<integer>75</integer>
+						</gt>
+						<transaction>
+							<delay unit="samples">3</delay>
+							<update>
+								<property>state/@severity</property>
+								<severity>warning</severity>
+							</update>
+						</transaction>
+						<transaction>
+							<update>
+								<property>state/@severity</property>
+								<severity>ok</severity>
+							</update>
+						</transaction>
+					</if>
+				</if>
+			</block>
+		</rule>
+		<rule name="SSH Access">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Network Connections&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;Network Connections&quot;)]/headlines/cell[(@name=&quot;Total connections&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<gt>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<integer>0</integer>
+					</gt>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>warning</severity>
+						</update>
+					</transaction>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>ok</severity>
+						</update>
+					</transaction>
+				</if>
+			</block>
+		</rule>
+		<rule name="No SSH">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Essential Processes&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;Essential Processes&quot;)]/rows/row[(@name=&quot;sshd&quot;)]/cell[(@column=&quot;instanceCount&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<equal>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<integer>0</integer>
+					</equal>
+					<transaction>
+						<delay unit="samples">3</delay>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>ok</severity>
+						</update>
+					</transaction>
+				</if>
+			</block>
+		</rule>
+		<rule name="Kernel CPU Usage">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;CPU&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;CPU&quot;)]/rows/row/cell[(@column=&quot;percentKernelTime&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<gt>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<integer>30</integer>
+					</gt>
+					<transaction>
+						<delay unit="samples">3</delay>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+					<if>
+						<gt>
+							<dataItem>
+								<property>@value</property>
+							</dataItem>
+							<integer>20</integer>
+						</gt>
+						<transaction>
+							<delay unit="samples">3</delay>
+							<update>
+								<property>state/@severity</property>
+								<severity>warning</severity>
+							</update>
+						</transaction>
+						<transaction>
+							<update>
+								<property>state/@severity</property>
+								<severity>ok</severity>
+							</update>
+						</transaction>
+					</if>
+				</if>
+			</block>
+		</rule>
+		<rule name="Google Ping">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Ping Google&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;Ping Google&quot;)]/rows/row[(@name=&quot;www.google.com&quot;)]/cell[(@column=&quot;State&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<equal>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<string>Up</string>
+					</equal>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>ok</severity>
+						</update>
+					</transaction>
+					<transaction>
+						<delay unit="samples">3</delay>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+				</if>
+			</block>
+		</rule>
+		<rule name="PetClinic OK">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Prod Server Web Response&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;Prod Server Web Response&quot;)]/rows/row[(@name=&quot;petclinic&quot;)]/cell[(@column=&quot;status&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<equal>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<string>OK</string>
+					</equal>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>ok</severity>
+						</update>
+					</transaction>
+					<transaction>
+						<delay unit="samples">3</delay>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+				</if>
+			</block>
+		</rule>
+		<rule name="Moodle Page OK">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Prod Server Web Response&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;Prod Server Web Response&quot;)]/rows/row[(@name=&quot;moodle&quot;)]/cell[(@column=&quot;responseText&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<equal>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<string>OK</string>
+					</equal>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>ok</severity>
+						</update>
+					</transaction>
+					<transaction>
+						<delay unit="samples">3</delay>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+				</if>
+			</block>
+		</rule>
+		<rule name="Moodle URL OK">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Prod Server Web Response&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;Prod Server Web Response&quot;)]/rows/row[(@name=&quot;moodle&quot;)]/cell[(@column=&quot;status&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<equal>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<string>OK</string>
+					</equal>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>ok</severity>
+						</update>
+					</transaction>
+					<transaction>
+						<delay unit="samples">3</delay>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+				</if>
+			</block>
+		</rule>
+		<rule name="System Disk">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;System Disk&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;System Disk&quot;)]/rows/row[(@name=&quot;/&quot;)]/cell[(@column=&quot;percentageUsed&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<gt>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<integer>80</integer>
+					</gt>
+					<transaction>
+						<delay unit="samples">3</delay>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+					<if>
+						<gt>
+							<dataItem>
+								<property>@value</property>
+							</dataItem>
+							<integer>70</integer>
+						</gt>
+						<transaction>
+							<delay unit="samples">5</delay>
+							<update>
+								<property>state/@severity</property>
+								<severity>warning</severity>
+							</update>
+						</transaction>
+						<transaction>
+							<update>
+								<property>state/@severity</property>
+								<severity>ok</severity>
+							</update>
+						</transaction>
+					</if>
+				</if>
+			</block>
+		</rule>
+		<rule name="Error in Messages">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Check for ERROR&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;Check for ERROR&quot;)]/headlines/cell[(@name=&quot;filesInError&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<gt>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<integer>0</integer>
+					</gt>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>warning</severity>
+						</update>
+					</transaction>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>ok</severity>
+						</update>
+					</transaction>
+				</if>
+			</block>
+		</rule>
+		<rule name="Primary NIC">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Network Info&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;Network Info&quot;)]/rows/row[(@name=&quot;eth0&quot;)]/cell[(@column=&quot;Availability&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<equal>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<string>absent</string>
+					</equal>
+					<transaction>
+						<delay unit="samples">3</delay>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>ok</severity>
+						</update>
+					</transaction>
+				</if>
+			</block>
+		</rule>
+		<rule name="Too Many Logstash Processes">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Essential Processes&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;Essential Processes&quot;)]/rows/row[(@name=&quot;logstash&quot;)]/cell[(@column=&quot;instanceCount&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<gt>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<integer>1</integer>
+					</gt>
+					<transaction>
+						<delay unit="samples">2</delay>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>ok</severity>
+						</update>
+					</transaction>
+				</if>
+			</block>
+		</rule>
+	</rules>
+	<knowledgeBase>
+		<urlTemplate name="Google">
+			<urlTemplateElements>
+				<urlTemplateElement>
+					<literal>https://www.google.com</literal>
+				</urlTemplateElement>
+			</urlTemplateElements>
+		</urlTemplate>
+		<urlTemplate name="Disk Issue">
+			<urlTemplateElements>
+				<urlTemplateElement>
+					<xpath>/geneos/gateway[(@name=&quot;ip-172-31-11-238.ap-southeast-1.compute.internal&quot;)]/directory/probe[(@name=&quot;OpenShift&quot;)]/managedEntity[(@name=&quot;OpenShift&quot;)]/sampler[(@name=&quot;System Disk&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;System Disk&quot;)]/rows/row[(@name=&quot;/&quot;)]/cell[(@column=&quot;percentageUsed&quot;)]</xpath>
+				</urlTemplateElement>
+			</urlTemplateElements>
+		</urlTemplate>
+		<kbaSet name="Google">
+			<kba>
+				<label>Google</label>
+				<urlElements>
+					<urlElement>
+						<urlTemplate ref="Google"/>
+					</urlElement>
+				</urlElements>
+				<targets>
+					<target>/geneos/gateway[(@name=&quot;ip-172-31-11-238.ap-southeast-1.compute.internal&quot;)]/directory/probe/managedEntity/sampler[(@name=&quot;CPU&quot;)][(@type=&quot;System Checks&quot;)]/dataview[(@name=&quot;CPU&quot;)]/rows/row/cell[(@column=&quot;percentUtilisation&quot;)]</target>
+				</targets>
+			</kba>
+		</kbaSet>
+	</knowledgeBase>
 </gateway>

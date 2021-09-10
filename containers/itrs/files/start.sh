@@ -14,7 +14,7 @@ cd /opt/itrs/netprobe
 ./netprobe.linux_64 -port 7036 -nopassword &
 sleep 10
 cd /opt/itrs/gateway
-./gateway2.linux_64 #-log gateway2.log &
+./gateway2.linux_64 -port 7039 #-log gateway2.log &
 
 while :
 do

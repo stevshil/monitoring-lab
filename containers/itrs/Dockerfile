@@ -39,10 +39,13 @@ RUN ln -s /opt/itrs/licensedir/gateway.lic /opt/itrs/licd/geneos.lic
 # Remove tmp files
 RUN rm /tmp/*.gz /tmp/*.rpm
 
+# Set hostid
+RUN echo -en "\027\053\0254\037" >/etc/hostid
+
 # Start up
 COPY files/start.sh /start.sh
 RUN chmod +x /start.sh
 VOLUME /opt/itrs/gateway/licensedir
-EXPOSE 7038
 EXPOSE 7036
+EXPOSE 7039
 ENTRYPOINT ["/start.sh"]

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!--Edited using Gateway Setup Editor version GA5.8.1-210615 at 2021-08-08 11:15:32 by Administrator on EC2AMAZ-8RI616P-->
+<!--Edited using Gateway Setup Editor version GA5.8.1-210610 at 2021-09-10 17:52:02 by itrs on itrs-VirtualBox-->
 <!-- Gateway-created setup include file for user ActiveConsole1 at 172.31.23.230 -->
 <gateway compatibility="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.itrsgroup.com/GA5.8.2-210629/gateway.xsd">
 	<types>
 		<type name="Database Checks">
+			<sampler disabled="false" ref="DB Disk Used"/>
+		</type>
+		<type name="ITRSDB">
 			<sampler ref="Database Tables"/>
-			<sampler ref="DB Disk Used" disabled="true"/>
-			<sampler ref="Docker Volume Usage"/>
+			<sampler ref="DB Last Update"/>
 		</type>
 	</types>
 	<samplers>
@@ -20,7 +22,7 @@
 							</name>
 							<sql>
 								<data>use information_schema;
-select TABLE_NAME, TABLE_NAME  
+select TABLE_NAME TABLE1, TABLE_NAME TABLE2
 from tables where table_schema=&apos;petclinic&apos;;</data>
 							</sql>
 						</query>
@@ -30,7 +32,7 @@ from tables where table_schema=&apos;petclinic&apos;;</data>
 							</name>
 							<sql>
 								<data>use information_schema;
-select TABLE_NAME, TABLE_NAME  
+select TABLE_NAME TABLE1, TABLE_NAME TABLE2
 from tables where table_schema=&apos;moodle&apos;;</data>
 							</sql>
 						</query>
@@ -39,7 +41,7 @@ from tables where table_schema=&apos;moodle&apos;;</data>
 						<database>
 							<mysql>
 								<var-serverName>
-									<data>172.31.14.94</data>
+									<data>appdb</data>
 								</var-serverName>
 							</mysql>
 						</database>
@@ -49,6 +51,9 @@ from tables where table_schema=&apos;moodle&apos;;</data>
 						<password>
 							<stdAES>+encs+8C9C29D67064207FDFD2DEFDE51FA824</stdAES>
 						</password>
+						<closeConnectionAfterQuery>
+							<data>true</data>
+						</closeConnectionAfterQuery>
 					</connection>
 				</sql-toolkit>
 			</plugin>
@@ -62,20 +67,45 @@ from tables where table_schema=&apos;moodle&apos;;</data>
 				</toolkit>
 			</plugin>
 		</sampler>
-		<sampler name="Docker Volume Usage">
+		<sampler name="DB Last Update">
 			<plugin>
-				<toolkit>
-					<samplerScript>
-						<data>/usr/bin/du -sh /var/lib/docker/volumes/* | /usr/bin/awk &apos;BEGIN{OFS=&quot;,&quot;; print &quot;Volume,Size&quot;}{print $2,$1}&apos;</data>
-					</samplerScript>
-				</toolkit>
+				<sql-toolkit>
+					<queries>
+						<query>
+							<name>
+								<data>Last Update</data>
+							</name>
+							<sql>
+								<data>select concat(table_schema,&quot;-&quot;,table_name) as DBTable,table_schema,table_name,update_time from tables where table_schema in (&quot;petclinic&quot;,&quot;moodle&quot;)  AND update_time is not null;</data>
+							</sql>
+						</query>
+					</queries>
+					<connection>
+						<database>
+							<mysql>
+								<var-serverName>
+									<data>appdb</data>
+								</var-serverName>
+								<var-databaseName>
+									<data>information_schema</data>
+								</var-databaseName>
+							</mysql>
+						</database>
+						<var-userName>
+							<data>root</data>
+						</var-userName>
+						<password>
+							<stdAES>+encs+8C9C29D67064207FDFD2DEFDE51FA824</stdAES>
+						</password>
+					</connection>
+				</sql-toolkit>
 			</plugin>
 		</sampler>
 	</samplers>
 	<rules>
-		<rule name="Docker Volume Space">
+		<rule name="DB Disk Space">
 			<targets>
-				<target>/geneos/gateway[(@name=&quot;ip-172-31-11-238.ap-southeast-1.compute.internal&quot;)]/directory/probe[(@name=&quot;App Server&quot;)]/managedEntity[(@name=&quot;Application Server&quot;)]/sampler[(@name=&quot;Docker Volume Usage&quot;)][(@type=&quot;Database Checks&quot;)]/dataview[(@name=&quot;Docker Volume Usage&quot;)]/rows/row/cell[(@column=&quot;Size&quot;)]</target>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;DB Disk Used&quot;)][(@type=&quot;Database Checks&quot;)]/dataview[(@name=&quot;DB Disk Used&quot;)]/rows/row[(@name=&quot;/var/lib/docker/volumes/containers_db-data/_data&quot;)]/cell[(@column=&quot;Size&quot;)]</target>
 			</targets>
 			<priority>1</priority>
 			<block>
@@ -84,9 +114,10 @@ from tables where table_schema=&apos;moodle&apos;;</data>
 						<dataItem>
 							<property>@value</property>
 						</dataItem>
-						<integer>500</integer>
+						<integer>8000</integer>
 					</gt>
 					<transaction>
+						<delay unit="samples">3</delay>
 						<update>
 							<property>state/@severity</property>
 							<severity>critical</severity>
@@ -97,9 +128,10 @@ from tables where table_schema=&apos;moodle&apos;;</data>
 							<dataItem>
 								<property>@value</property>
 							</dataItem>
-							<integer>300</integer>
+							<integer>6000</integer>
 						</gt>
 						<transaction>
+							<delay unit="samples">3</delay>
 							<update>
 								<property>state/@severity</property>
 								<severity>warning</severity>
@@ -112,6 +144,36 @@ from tables where table_schema=&apos;moodle&apos;;</data>
 							</update>
 						</transaction>
 					</if>
+				</if>
+			</block>
+		</rule>
+		<rule name="Table missing">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler/dataview[(@name=&quot;OC DB Table Check PeClinic&quot;)]/rows/row[(@name=&quot;pets&quot;)]/cell[(@column=&quot;Availability&quot;)]</target>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler/dataview[(@name=&quot;OC DB Table Check PeClinic&quot;)]/rows/row[(@name=&quot;vets&quot;)]/cell[(@column=&quot;Availability&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<block>
+				<if>
+					<equal>
+						<dataItem>
+							<property>@value</property>
+						</dataItem>
+						<string>absent</string>
+					</equal>
+					<transaction>
+						<delay unit="samples">3</delay>
+						<update>
+							<property>state/@severity</property>
+							<severity>critical</severity>
+						</update>
+					</transaction>
+					<transaction>
+						<update>
+							<property>state/@severity</property>
+							<severity>ok</severity>
+						</update>
+					</transaction>
 				</if>
 			</block>
 		</rule>

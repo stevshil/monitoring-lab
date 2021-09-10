@@ -27,6 +27,22 @@ EXPOSE 9995
 EXPOSE 9100
 EXPOSE 9256
 
-COPY docker-entrypoint.sh.mariadb /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Install ITRS Geneos netprobe
+COPY geneos-netprobe-5.8.2-linux-x64.tar.gz /tmp
+RUN mkdir -p /opt/itrs/netprobe
+RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
+COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
+
+RUN sed -i '/exec "$@"/i\# Start Process exporter\n \
+cd /opt/exporters\n \
+./process-exporter -config.path process-exporter.conf &\n \
+# Start Node exporter\n \
+./node_exporter &\n \
+# Start disk usage\n \
+./disk_usage_exporter &\n \
+# Start netprobe\n \
+cd /opt/itrs/netprobe\n \
+./netprobe.linux_64 -port 7036 -nopassword &' /usr/local/bin/docker-entrypoint.sh
+# COPY docker-entrypoint.sh.mariadb /usr/local/bin/docker-entrypoint.sh
+# RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 # ENTRYPOINT ["/start.sh"]

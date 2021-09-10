@@ -1,2 +1,4 @@
 containers/itrs/files/ITRS/*
 containers/itrs/files/new/**
+**/geneos-netprobe-5.8.2-linux-x64.tar.gz
+**/mysql-connector-c-shared-6.1.10-1.el7.x86_64.rpm

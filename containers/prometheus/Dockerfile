@@ -25,4 +25,11 @@ EXPOSE 9094
 EXPOSE 9102
 # Collectd exporter
 EXPOSE 9103
+
+# Install ITRS Geneos netprobe
+COPY geneos-netprobe-5.8.2-linux-x64.tar.gz /tmp
+RUN mkdir -p /opt/itrs/netprobe
+RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
+COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
+
 ENTRYPOINT ["/app/start.sh"]
