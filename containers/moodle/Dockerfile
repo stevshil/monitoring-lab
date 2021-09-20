@@ -32,10 +32,10 @@ EXPOSE 9995
 EXPOSE 9256
 
 # Install ITRS Geneos netprobe
-#COPY geneos-netprobe-5.8.2-linux-x64.tar.gz /tmp
-#RUN mkdir -p /opt/itrs/netprobe
-#RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
-#COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
+# COPY geneos-netprobe-5.8.2-linux-x64.tar.gz /tmp
+# RUN mkdir -p /opt/itrs/netprobe
+# RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
+# COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
 
 # Update entrypoint
 RUN sed -i '/exec "$@"/i\cd \/opt\/exporters' /opt/bitnami/scripts/moodle/entrypoint.sh
@@ -44,6 +44,6 @@ RUN sed -i '/exec "$@"/i\.\/node_exporter &' /opt/bitnami/scripts/moodle/entrypo
 RUN sed -i '/exec "$@"/i\.\/process-exporter -config.path process-exporter.conf &' /opt/bitnami/scripts/moodle/entrypoint.sh
 RUN sed -i '/exec "$@"/i\cd -' /opt/bitnami/scripts/moodle/entrypoint.sh
 RUN sed -i '/exec "$@"/i\chmod 777 /bitnami/moodledata' /opt/bitnami/scripts/moodle/entrypoint.sh
-#RUN sed -i '/exec "$@"/i\# Start netprobe\n \
-#cd /opt/itrs/netprobe\n \
-#./netprobe.linux_64 -port 7036 -nopassword &' /opt/bitnami/scripts/moodle/entrypoint.sh
+# RUN sed -i '/exec "$@"/i\# Start netprobe\n \
+# cd /opt/itrs/netprobe\n \
+# ./netprobe.linux_64 -port 7036 -nopassword &' /opt/bitnami/scripts/moodle/entrypoint.sh
