@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Start netprobe
-cd /opt/itrs/netprobe
-./netprobe.linux_64 -port 7036 -nopassword &
+#cd /opt/itrs/netprobe
+#./netprobe.linux_64 -port 7036 -nopassword &
 
 echo "DBSERVERNAME=$DBSERVERNAME"
 echo "DBUSERNAME=$DBUSERNAME"

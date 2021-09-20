@@ -44,6 +44,6 @@ RUN sed -i '/exec "$@"/i\.\/node_exporter &' /opt/bitnami/scripts/moodle/entrypo
 RUN sed -i '/exec "$@"/i\.\/process-exporter -config.path process-exporter.conf &' /opt/bitnami/scripts/moodle/entrypoint.sh
 RUN sed -i '/exec "$@"/i\cd -' /opt/bitnami/scripts/moodle/entrypoint.sh
 RUN sed -i '/exec "$@"/i\chmod 777 /bitnami/moodledata' /opt/bitnami/scripts/moodle/entrypoint.sh
-RUN sed -i '/exec "$@"/i\# Start netprobe\n \
-cd /opt/itrs/netprobe\n \
-./netprobe.linux_64 -port 7036 -nopassword &' /opt/bitnami/scripts/moodle/entrypoint.sh
+#RUN sed -i '/exec "$@"/i\# Start netprobe\n \
+#cd /opt/itrs/netprobe\n \
+#./netprobe.linux_64 -port 7036 -nopassword &' /opt/bitnami/scripts/moodle/entrypoint.sh

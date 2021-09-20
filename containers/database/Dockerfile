@@ -39,7 +39,7 @@ cd /opt/exporters\n \
 # Start Node exporter\n \
 ./node_exporter &\n \
 # Start disk usage\n \
-./disk_usage_exporter &\n \
+./disk_usage_exporter &' /usr/local/bin/docker-entrypoint.sh
 # Start netprobe\n \
 #cd /opt/itrs/netprobe' /usr/local/bin/docker-entrypoint.sh 
 #./netprobe.linux_64 -port 7036 -nopassword &' /usr/local/bin/docker-entrypoint.sh
