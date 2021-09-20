@@ -5,7 +5,7 @@ This project has been created to spin up a simple monitoring training environmen
 * Grafana
 * Prometheus
 * ITRS
-  - Note for ITRS you'll need to uncomment the code in docker-compose.yml and also add you .lic license file to the **containers/itrs/files/ITRS** folder.
+  - Note for ITRS you'll need to your own .lic license file to the **containers/itrs/files/ITRS** folder, and call it 1fac2b17.lic.  The license must be registered for that hostid.  Alternatively change the hostid in the ITRS Dockerfile so that the hostid matches one of your licenses.
 * ELK
 * Others may be added
 

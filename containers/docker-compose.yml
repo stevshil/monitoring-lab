@@ -1,10 +1,10 @@
 version: "3.7"
 services:
-  appdb:
+  database:
     build:
       context: database
-    image: monitor/appdb
-    container_name: appdb
+    image: monitor/database
+    container_name: database
     volumes:
       - type: volume
         source: db-data
@@ -21,7 +21,7 @@ services:
     image: monitor/petclinic
     container_name: petclinic
     environment:
-      - DBSERVERNAME=appdb
+      - DBSERVERNAME=database
       - DBUSERNAME=root
       - DBPASSWORD=petclinic
     ports:
@@ -42,8 +42,8 @@ services:
       - MOODLE_DATABASE_USER=root
       - MOODLE_DATABASE_PASSWORD=petclinic
       - MOODLE_DATABASE_NAME=moodle
-      - MOODLE_DATABASE_HOST=appdb
-      - MYSQL_CLIENT_DATABASE_HOST=appdb
+      - MOODLE_DATABASE_HOST=database
+      - MYSQL_CLIENT_DATABASE_HOST=database
       - MYSQL_CLIENT_DATABASE_ROOT_PASSWORD=petclinic
       - BITNAMI_DEBUG=true
       - MOODLE_SKIP_INSTALL=no
@@ -54,7 +54,7 @@ services:
     image: prom/mysqld-exporter:v0.13.0
     container_name: dbmon
     environment:
-      DATA_SOURCE_NAME: 'exporter:promexporter123@(appdb:3306)/'
+      DATA_SOURCE_NAME: 'exporter:promexporter123@(database:3306)/'
     command: --collect.global_status --collect.info_schema.innodb_metrics --collect.auto_increment.columns --collect.info_schema.processlist --collect.binlog_size --collect.info_schema.tablestats --collect.global_variables --collect.info_schema.query_response_time --collect.info_schema.userstats --collect.info_schema.tables --collect.perf_schema.tablelocks --collect.perf_schema.file_events --collect.perf_schema.eventswaits --collect.perf_schema.indexiowaits --collect.perf_schema.tableiowaits --collect.slave_status
   prometheus:
     build:
