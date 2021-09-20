@@ -32,10 +32,10 @@ EXPOSE 9995
 EXPOSE 9256
 
 # Install ITRS Geneos netprobe
-COPY geneos-netprobe-5.8.2-linux-x64.tar.gz /tmp
-RUN mkdir -p /opt/itrs/netprobe
-RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
-COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
+#COPY geneos-netprobe-5.8.2-linux-x64.tar.gz /tmp
+#RUN mkdir -p /opt/itrs/netprobe
+#RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
+#COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
 
 # Update entrypoint
 RUN sed -i '/exec "$@"/i\cd \/opt\/exporters' /opt/bitnami/scripts/moodle/entrypoint.sh
