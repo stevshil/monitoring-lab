@@ -30,6 +30,20 @@ When using the docker-compose system you can point your web browser at the follo
 * Grafana
   - http://localhost:3000
 
+# Set up and running
+
+To work with this system you will need to first install some dependent files from the web.  This is done by running;
+
+```
+./setup.sh
+```
+
+Once you have done this you can then build and start the environment with;
+
+```
+docker-compose up -d
+```
+
 # References
 
 ## Prometheus/Grafana
