@@ -42,5 +42,17 @@ then
     wget https://www.dropbox.com/sh/q63dnt8e4b99n0p/AACUh15sqiRxJQdivTBHXzy9a/mysql-connector-java-5.1.42.tar.gz?dl=0 -O mysql-connector-java-5.1.42.tar.gz
 fi
 
+# Add the netprobe to all directories as a symlink
 cd ../../..
-docker-compose build
+for containerdir in database dbclient grafana moodle petclinic prometheus
+do
+  if [[ ! -e $containerdir/geneos-netprobe-5.8.2-linux-x64.tar.gz ]]
+  then
+    cd $containerdir
+    ln ../itrs/files/ITRS/geneos-netprobe-5.8.2-linux-x64.tar.gz geneos-netprobe-5.8.2-linux-x64.tar.gz
+    cd ..
+  fi
+done
+
+#cd ../../..
+#docker-compose build
