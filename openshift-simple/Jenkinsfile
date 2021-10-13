@@ -25,6 +25,7 @@ pipeline {
 		      sh 'docker-compose build database'
 		      sh 'docker tag monitor/database:latest dockerreg.conygre.com:5000/prod/monitor/database:${BUILD_NUMBER}'
 		      sh 'docker push dockerreg.conygre.com:5000/prod/monitor/database:${BUILD_NUMBER}'
+          sh 'docker tag monitor/database:latest dockerreg.conygre.com:5000/prod/monitor/database:latest'
 		    }
 		  }
 		}
@@ -34,6 +35,7 @@ pipeline {
 		      sh 'docker-compose build moodle'
 		      sh 'docker tag monitor/moodle:latest dockerreg.conygre.com:5000/prod/monitor/moodle:${BUILD_NUMBER}'
 		      sh 'docker push dockerreg.conygre.com:5000/prod/monitor/moodle:${BUILD_NUMBER}'
+          sh 'docker tag monitor/moodle:latest dockerreg.conygre.com:5000/prod/monitor/moodle:latest'
 		    }
 		  }
 		}
@@ -43,6 +45,7 @@ pipeline {
 		      sh 'docker-compose build petclinic'
 		      sh 'docker tag monitor/petclinic:latest dockerreg.conygre.com:5000/prod/monitor/petclinic:${BUILD_NUMBER}'
 		      sh 'docker push dockerreg.conygre.com:5000/prod/monitor/petclinic:${BUILD_NUMBER}'
+          sh 'docker tag monitor/petclinic:latest dockerreg.conygre.com:5000/prod/monitor/petclinic:latest'
 		    }
 		  }
 		}
