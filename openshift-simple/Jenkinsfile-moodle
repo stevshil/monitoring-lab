@@ -21,6 +21,14 @@ pipeline {
                 ])
       }
     }
+    stage("Remove existing deployment") {
+    steps {
+      dir('.openshift-simple/db') {
+        sh 'oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443'
+        sh 'oc project ${projectName}'
+        sh 'oc delete deployment moodle || echo "OK"'
+      }
+    }
 		stage("Configure Moodle") {
 		  steps {
 		    dir('.openshift-simple/db') {
