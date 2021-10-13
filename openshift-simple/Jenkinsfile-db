@@ -15,6 +15,7 @@ pipeline {
 		stage("Configure Database") {
 		  steps {
 		    dir('openshift-simple/db') {
+          sh 'oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443'
 		      sh 'oc apply -f db-data-persistentvolumeclaim.yaml'
 		      sh 'oc apply -f database-deploymentconfig.yaml'
 		      sh 'oc apply -f database-service.yaml'
@@ -24,6 +25,7 @@ pipeline {
     stage("Launch Database") {
       steps {
         dir('openshift-simple/db') {
+          sh 'oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443'
           sh 'oc start-build database'
         }
       }
