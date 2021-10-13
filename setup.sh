@@ -44,7 +44,6 @@ fi
 
 
 cd ../../..
-cd containers
 for folder in databases dbclient grafana moodle petclinic prometheus
 do
 	cd $folder
