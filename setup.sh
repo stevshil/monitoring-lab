@@ -48,7 +48,7 @@ cd ${startdir}/containers
 for folder in databases dbclient grafana moodle petclinic prometheus
 do
 	cd $folder
-	ln itrs/files/ITRS/geneos-netprobe-5.8.2-linux-x64.tar.gz geneos-netprobe-5.8.2-linux-x64.tar.gz
+	ln ../itrs/files/ITRS/geneos-netprobe-5.8.2-linux-x64.tar.gz geneos-netprobe-5.8.2-linux-x64.tar.gz
 	cd ..
 done
 docker-compose build
