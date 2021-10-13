@@ -47,8 +47,4 @@ pipeline {
 		  }
 		}
   }
-  type: JenkinsPipeline
-  triggers: {
-    pollSCM('H */2 * * 1-5')
-  }
 }
