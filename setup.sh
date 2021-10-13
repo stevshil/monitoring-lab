@@ -3,7 +3,7 @@
 # This script is used to get the binaries required to build
 filesdir=containers/itrs/files/ITRS
 
-[[ ! -d $filesdir ]] && mkdir $filesdir
+[[ ! -d $filesdir ]] && mkdir -p $filesdir
 
 if ! which wget >/dev/null 2>&1
 then
