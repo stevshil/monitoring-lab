@@ -1,28 +1,17 @@
-apiVersion: v1
-kind: BuildConfig
-metadata:
-  name: pipeline
-spec:
-  strategy:
-    jenkinsPipelineStrategy:
-      jenkinsfile: |-
-        pipeline {
-          agent none
-          stages {
-            stage("Create Project Environment") {
-              agent {label 'maven'}
-              stages {
-                stage("Clone Source") {
-                  steps {
-                    checkout([$class: 'GitSCM',
-                                branches: [[name: "*/main"]],
-                                extensions: [
-                                  [$class: 'RelativeTargetDirectory', relativeTargetDir: 'environment']
-                                ],
-                    userRemoteConfigs: [[url: "https://github.com/stevshil/monitoring-lab.git"]]
-                            ])
-                  }
-                }
+pipeline {
+  agent any
+  stages {
+    stage("Clone Source") {
+      steps {
+        checkout([$class: 'GitSCM',
+                    branches: [[name: "*/main"]],
+                    extensions: [
+                      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'environment']
+                    ],
+        userRemoteConfigs: [[url: "https://github.com/stevshil/monitoring-lab.git"]]
+                ])
+      }
+    }
 		stage("Ensure dependent files are available") {
 		  steps {
 		    dir('.') {
@@ -57,11 +46,8 @@ spec:
 		    }
 		  }
 		}
-              }
-            }
-          }
-        }
-    type: JenkinsPipeline
-    triggers: {
-      pollSCM('H */2 * * 1-5')
-    }
+  }
+  type: JenkinsPipeline
+  triggers: {
+    pollSCM('H */2 * * 1-5')
+}
