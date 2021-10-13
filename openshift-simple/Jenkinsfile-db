@@ -1,0 +1,32 @@
+pipeline {
+  agent any
+  stages {
+    stage("Clone Source") {
+      steps {
+        checkout([$class: 'GitSCM',
+                    branches: [[name: "*/main"]],
+                    extensions: [
+                      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'environment']
+                    ],
+        userRemoteConfigs: [[url: "https://github.com/stevshil/monitoring-lab.git"]]
+                ])
+      }
+    }
+		stage("Configure Database") {
+		  steps {
+		    dir('openshift-simple/db') {
+		      sh 'oc apply -f db-data-persistentvolumeclaim.yaml'
+		      sh 'oc apply -f database-deploymentconfig.yaml'
+		      sh 'oc apply -f database-service.yaml'
+		    }
+		  }
+		}
+    stage("Launch Database") {
+      steps {
+        dir('openshift-simple/db') {
+          sh 'oc start-build database'
+        }
+      }
+    }
+  }
+}
