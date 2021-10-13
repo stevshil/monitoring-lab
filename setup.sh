@@ -44,7 +44,7 @@ then
 fi
 
 
-cd startdir/containers
+cd ${startdir}/containers
 for folder in databases dbclient grafana moodle petclinic prometheus
 do
 	cd $folder
