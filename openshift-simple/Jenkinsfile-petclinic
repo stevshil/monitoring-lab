@@ -1,0 +1,40 @@
+pipeline {
+  agent any
+  parameters {
+    string(name: 'projectName', defaultValue: 'pc', description: 'OpenShift project name')
+    string(name: 'DBSERVERNAME', defaultValue: 'database', description: 'Database servername for Petclinic')
+    string(name: 'DBUSERNAME', defaultValue: 'root', description: 'Database username')
+    string(name: 'DBPASSWORD', defaultValue: 'petclinic',  description: 'Databae user password')
+  }
+  stages {
+    stage("Clone Source") {
+      steps {
+        checkout([$class: 'GitSCM',
+                    branches: [[name: "*/main"]],
+                    extensions: [
+                      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'environment']
+                    ],
+        userRemoteConfigs: [[url: "https://github.com/stevshil/monitoring-lab.git"]]
+                ])
+      }
+    }
+		stage("Configure Petclinic") {
+		  steps {
+		    dir('.openshift-simple/db') {
+          sh 'oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443'
+          sh 'oc project ${projectName}'
+		      sh 'oc new-app --docker-image=dockerreg.conygre.com:5000/prod/monitor/petclinic:latest --name=petclinic -e DBSERVERNAME=${DBSERVERNAME} -e DBUSERNAME=${DBUSERNAME} -e DBPASSWORD=${DBPASSWORD}'
+		    }
+		  }
+		}
+    stage("Launch Petclinic") {
+      steps {
+        dir('openshift-simple/db') {
+          sh 'oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443'
+          sh 'oc project ${projectName}'
+          sh 'oc start-build petclinic || echo "Build already started"'
+        }
+      }
+    }
+  }
+}
