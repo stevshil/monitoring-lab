@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  parameters {
+    string(name: 'projectName', defaultValue: 'pc', description: 'OpenShift project name')
+  }
   stages {
     stage("Clone Source") {
       steps {
@@ -16,6 +19,7 @@ pipeline {
 		  steps {
 		    dir('openshift-simple/db') {
           sh 'oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443'
+          sh 'oc project ${projectName}'
 		      sh 'oc apply -f db-data-persistentvolumeclaim.yaml'
 		      sh 'oc apply -f database-deploymentconfig.yaml'
 		      sh 'oc apply -f database-service.yaml'
@@ -26,6 +30,7 @@ pipeline {
       steps {
         dir('openshift-simple/db') {
           sh 'oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443'
+          sh 'oc project ${projectName}'
           sh 'oc start-build database'
         }
       }
