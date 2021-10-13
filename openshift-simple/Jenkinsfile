@@ -15,7 +15,7 @@ pipeline {
 		stage("Ensure dependent files are available") {
 		  steps {
 		    dir('.') {
-		      sh './setup'
+		      sh './setup.sh'
 		    }
 		  }
 		}
