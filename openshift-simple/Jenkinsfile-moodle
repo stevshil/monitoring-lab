@@ -8,7 +8,6 @@ pipeline {
     string(name: 'MOODLE_DATABASE_NAME',defaultValue: 'moodle', description: 'Moodle schema in database server')
     string(name: 'MOODLE_USERNAME',defaultValue: 'admin', description: 'Moodle web user')
     string(name: 'MOODLE_PASSWORD',defaultValue: 'admin123', description: 'Moodle Web user password')
-    string(name: )
   }
   stages {
     stage("Clone Source") {
