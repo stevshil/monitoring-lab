@@ -1,6 +1,6 @@
 #FROM mysql:5.7.19
-FROM mariadb:10.2.39
-#FROM mariadb:latest
+#FROM mariadb:10.2.39
+FROM mariadb:latest
 RUN apt -y update
 RUN apt -y install git wget
 RUN git clone https://github.com/spring-projects/spring-petclinic.git /app
