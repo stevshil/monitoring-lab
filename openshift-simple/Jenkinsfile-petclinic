@@ -27,14 +27,5 @@ pipeline {
 		    }
 		  }
 		}
-    stage("Launch Petclinic") {
-      steps {
-        dir('openshift-simple/db') {
-          sh 'oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443'
-          sh 'oc project ${projectName}'
-          sh 'oc start-build petclinic || echo "Build already started"'
-        }
-      }
-    }
   }
 }
