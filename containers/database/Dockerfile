@@ -1,6 +1,6 @@
 #FROM mysql:5.7.19
-#FROM mariadb:10.2.39
-FROM mariadb:latest
+FROM mariadb:10.2.39
+#FROM mariadb:latest
 RUN apt -y update
 RUN apt -y install git wget
 RUN git clone https://github.com/spring-projects/spring-petclinic.git /app
@@ -42,7 +42,7 @@ cd /opt/exporters\n \
 # Start disk usage\n \
 ./disk_usage_exporter &' /usr/local/bin/docker-entrypoint.sh
 # Start netprobe\n \
-#cd /opt/itrs/netprobe' /usr/local/bin/docker-entrypoint.sh 
+#cd /opt/itrs/netprobe' /usr/local/bin/docker-entrypoint.sh
 #./netprobe.linux_64 -port 7036 -nopassword &' /usr/local/bin/docker-entrypoint.sh
 # COPY docker-entrypoint.sh.mariadb /usr/local/bin/docker-entrypoint.sh
 # RUN chmod +x /usr/local/bin/docker-entrypoint.sh
