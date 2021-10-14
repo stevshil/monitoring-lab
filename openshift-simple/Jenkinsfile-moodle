@@ -24,7 +24,7 @@ pipeline {
     }
     stage("Remove existing deployment") {
       steps {
-        dir('.openshift-simple/db') {
+        dir('openshift-simple/db') {
           sh '''oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443'
           oc project ${projectName}
           oc delete dc moodle || echo "OK"'''
