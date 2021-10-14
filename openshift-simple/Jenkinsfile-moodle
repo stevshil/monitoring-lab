@@ -4,10 +4,11 @@ pipeline {
     string(name: 'projectName', defaultValue: 'pc', description: 'OpenShift project name')
     string(name: 'MOODLE_DATABASE_HOST', defaultValue: 'database', description: 'Database servername for Moodle')
     string(name: 'MOODLE_DATABASE_USER', defaultValue: 'root', description: 'Database username')
-    string(name: 'MOODLE_DATABASE_PASSWORD', defaultValue: 'petclinic',  description: 'Database user password')
+    password(name: 'MOODLE_DATABASE_PASSWORD', defaultValue: 'petclinic',  description: 'Database user password')
     string(name: 'MOODLE_DATABASE_NAME',defaultValue: 'moodle', description: 'Moodle schema in database server')
     string(name: 'MOODLE_USERNAME',defaultValue: 'admin', description: 'Moodle web user')
-    string(name: 'MOODLE_PASSWORD',defaultValue: 'admin123', description: 'Moodle Web user password')
+    password(name: 'MOODLE_PASSWORD',defaultValue: 'admin123', description: 'Moodle Web user password')
+    string(name: 'MOODLE_SKIP_INSTALL',defaultValue: 'no', description: 'No for new installation, yes for update')
   }
   stages {
     stage("Clone Source") {
