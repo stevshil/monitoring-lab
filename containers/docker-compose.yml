@@ -5,6 +5,7 @@ services:
       context: database
     image: monitor/database
     container_name: database
+    restart: always
     volumes:
       - type: volume
         source: db-data
@@ -20,6 +21,7 @@ services:
       dockerfile: Dockerfile.dc
     image: monitor/petclinic
     container_name: petclinic
+    restart: always
     environment:
       - DBSERVERNAME=database
       - DBUSERNAME=root
@@ -32,6 +34,7 @@ services:
       dockerfile: Dockerfile
     image: monitor/moodle
     container_name: moodle
+    restart: always
     volumes:
       - type: volume
         source: moodle-data
@@ -53,6 +56,7 @@ services:
   dbmon:
     image: prom/mysqld-exporter:v0.13.0
     container_name: dbmon
+    restart: always
     environment:
       DATA_SOURCE_NAME: 'exporter:promexporter123@(database:3306)/'
     command: --collect.global_status --collect.info_schema.innodb_metrics --collect.auto_increment.columns --collect.info_schema.processlist --collect.binlog_size --collect.info_schema.tablestats --collect.global_variables --collect.info_schema.query_response_time --collect.info_schema.userstats --collect.info_schema.tables --collect.perf_schema.tablelocks --collect.perf_schema.file_events --collect.perf_schema.eventswaits --collect.perf_schema.indexiowaits --collect.perf_schema.tableiowaits --collect.slave_status
@@ -61,6 +65,7 @@ services:
       context: prometheus
     image: monitor/prometheus
     container_name: prometheus
+    restart: always
     volumes:
       - type: volume
         source: prom-data
@@ -73,6 +78,7 @@ services:
       context: grafana
     image: monitor/grafana
     container_name: grafana
+    restart: always
     ports:
       - 3000:3000
   dbclient:
@@ -86,6 +92,7 @@ services:
 #      context: itrs
 #    image: monitor/itrs
 #    container_name: itrs
+#    restart: always
 #    ports:
 #      - 7039:7039
 #      - 7036:7036
