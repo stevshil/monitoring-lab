@@ -28,6 +28,7 @@ COPY disk_usage_exporter.yaml /opt/exporters/disk_usage_exporter.yaml
 EXPOSE 9100
 EXPOSE 9995
 EXPOSE 9256
+EXPOSE 8080
 
 # Install ITRS Geneos netprobe
 # COPY geneos-netprobe-5.8.2-linux-x64.tar.gz /tmp
