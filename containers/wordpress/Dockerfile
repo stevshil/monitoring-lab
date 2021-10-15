@@ -22,10 +22,16 @@ RUN rm -rf /tmp/node_exporter-1.2.0.linux-amd64.tar.gz /opt/exporters/node_expor
 RUN wget https://github.com/dundee/disk_usage_exporter/releases/download/v0.1.0/disk_usage_exporter_linux_amd64.tgz -O /tmp/disk_usage_exporter_linux_amd64.tgz
 RUN cd /opt/exporters; tar xvf /tmp/disk_usage_exporter_linux_amd64.tgz; mv disk* disk_usage_exporter
 COPY disk_usage_exporter.yaml /opt/exporters/disk_usage_exporter.yaml
+
+# Change port 80 as OpenShift doesn't like it
+RUN sed -i 's, \*:80>, *:8001>,' /etc/apache2/sites-enabled/000-default.conf
+RUN sed -i 's/80/8001/' /etc/apache2/ports.conf
+
+# Ports exposed for app and
 EXPOSE 9100
 EXPOSE 9995
 EXPOSE 9256
-EXPOSE 80
+EXPOSE 8001
 EXPOSE 8080
 EXPOSE 8443
 

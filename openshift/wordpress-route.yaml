@@ -5,7 +5,7 @@ metadata:
 spec:
   host: wordpress
   port:
-    targetPort: '80'
+    targetPort: '8001'
   to:
     kind: Service
     name: wordpress

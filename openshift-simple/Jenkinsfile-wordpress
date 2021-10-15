@@ -25,7 +25,7 @@ pipeline {
           sh '''oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443
           oc project ${projectName}
 		      oc new-app --docker-image=dockerreg.conygre.com:5000/prod/monitor/wordpress:latest --name=wordpress -e WORDPRESS_DB_HOST="${WORDPRESS_DB_HOST}" -e WORDPRESS_DB_USER="${WORDPRESS_DB_USER}" -e WORDPRESS_DB_PASSWORD="${WORDPRESS_DB_PASSWORD}" -e WORDPRESS_DB_NAME="${WORDPRESS_DB_NAME}" -e WORDPRESS_TABLE_PREFIX="${WORDPRESS_TABLE_PREFIX}"
-          oc expose svc/wordpress --hostname wordpress.${DNS} --port=80 --name=wordpress'''
+          oc expose svc/wordpress --hostname wordpress.${DNS} --port=8001 --name=wordpress'''
 		    }
 		  }
 		}
