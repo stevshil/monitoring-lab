@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: wordpress
+spec:
+  host: wordpress
+  port:
+    targetPort: '8001'
+  to:
+    kind: Service
+    name: wordpress

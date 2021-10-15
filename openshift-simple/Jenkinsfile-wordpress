@@ -1,0 +1,33 @@
+pipeline {
+  agent any
+  parameters {
+    string(name: 'projectName', defaultValue: 'pc', description: 'OpenShift project name')
+    string(name: 'WORDPRESS_DB_HOST', defaultValue: 'database', description: 'Database servername for wordpress')
+    string(name: 'WORDPRESS_DB_USER', defaultValue: 'root', description: 'Database username')
+    password(name: 'WORDPRESS_DB_PASSWORD', defaultValue: 'petclinic',  description: 'Database user password')
+    string(name: 'WORDPRESS_DB_NAME',defaultValue: 'wordpress', description: 'wordpress schema in database server')
+    string(name: 'WORDPRESS_TABLE_PREFIX',defaultValue: 'wp_', description: 'No for new installation, yes for update')
+    string(name: 'DNS', defaultValue: 'openshift.conygre.com',description: 'The Domain name of your OpenShift server')
+  }
+  stages {
+    stage("Remove existing deployment") {
+      steps {
+        dir('openshift-simple') {
+          sh '''oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443
+          oc project ${projectName}
+          oc delete delete all -l app=wordpress || echo "OK"'''
+        }
+      }
+    }
+		stage("Configure wordpress") {
+		  steps {
+		    dir('openshift-simple') {
+          sh '''oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443
+          oc project ${projectName}
+		      oc new-app --docker-image=dockerreg.conygre.com:5000/prod/monitor/wordpress:latest --name=wordpress -e WORDPRESS_DB_HOST="${WORDPRESS_DB_HOST}" -e WORDPRESS_DB_USER="${WORDPRESS_DB_USER}" -e WORDPRESS_DB_PASSWORD="${WORDPRESS_DB_PASSWORD}" -e WORDPRESS_DB_NAME="${WORDPRESS_DB_NAME}" -e WORDPRESS_TABLE_PREFIX="${WORDPRESS_TABLE_PREFIX}"
+          oc expose svc/wordpress --hostname wordpress.${DNS} --port=8001 --name=wordpress'''
+		    }
+		  }
+		}
+  }
+}
