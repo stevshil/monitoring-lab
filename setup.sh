@@ -4,7 +4,7 @@
 startdir="$PWD"
 filesdir=containers/itrs/files/ITRS
 
-[[ ! -d "$filesdir" ]] && mkdir -p $filesdir
+[[ ! -d "$filesdir" ]] && mkdir -p "$filesdir"
 
 if ! which wget >/dev/null 2>&1
 then
@@ -47,7 +47,7 @@ fi
 cd "${startdir}/containers"
 for folder in database dbclient grafana moodle petclinic prometheus
 do
-	cd $folder
+	cd "$folder"
 	ln ../itrs/files/ITRS/geneos-netprobe-5.8.2-linux-x64.tar.gz geneos-netprobe-5.8.2-linux-x64.tar.gz
 	cd ..
 done
