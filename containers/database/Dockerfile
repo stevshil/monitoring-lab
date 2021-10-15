@@ -1,8 +1,17 @@
 #FROM mysql:5.7.19
 #FROM mariadb:10.2.39
 FROM mariadb:latest
-RUN apt -y update
-RUN apt -y install git wget
+# RUN grep -r mariadb /etc/apt
+#RUN sed -i 's,deb http://archive.mariadb.org/mariadb-10.2.39/repo/ubuntu/ bionic main,deb [trusted=yes] http://archive.mariadb.org/mariadb-10.2.39/repo/ubuntu/ bionic main,' /etc/apt/sources.list.d/mariadb.list
+#RUN sed -i '/deb http:\/\/archive.mariadb.org\/mariadb-10.2.39\/repo\/ubuntu\/ bionic main/d' /etc/apt/sources.list.d/mariadb.list
+#COPY mariadb_repo_setup /tmp
+#RUN apt-get -y install ca-certificates
+#RUN update-ca-certificates -f
+RUN apt-get -y update
+#RUN apt-get -y install curl
+#RUN bash /tmp/mariadb_repo_setup
+RUN apt-get -y install git wget
+
 RUN git clone https://github.com/spring-projects/spring-petclinic.git /app
 RUN cp /app/src/main/resources/db/mysql/schema.sql /docker-entrypoint-initdb.d/01.sql
 RUN cp /app/src/main/resources/db/mysql/data.sql /docker-entrypoint-initdb.d/02.sql
@@ -27,6 +36,7 @@ COPY disk_usage_exporter.yaml /opt/exporters/disk_usage_exporter.yaml
 EXPOSE 9995
 EXPOSE 9100
 EXPOSE 9256
+EXPOSE 3306
 
 # Install ITRS Geneos netprobe
 #COPY geneos-netprobe-5.8.2-linux-x64.tar.gz /tmp
