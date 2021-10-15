@@ -29,13 +29,13 @@ pipeline {
 		    }
 		  }
 		}
-		stage("Build Moodle Docker Image") {
+		stage("Build wordpress Docker Image") {
 		  steps {
 		    dir('containers') {
-		      sh 'docker-compose build moodle'
-		      sh 'docker tag monitor/moodle:latest dockerreg.conygre.com:5000/prod/monitor/moodle:${BUILD_NUMBER}'
-		      sh 'docker push dockerreg.conygre.com:5000/prod/monitor/moodle:${BUILD_NUMBER}'
-          sh 'docker tag monitor/moodle:latest dockerreg.conygre.com:5000/prod/monitor/moodle:latest'
+		      sh 'docker-compose build wordpress'
+		      sh 'docker tag monitor/wordpress:latest dockerreg.conygre.com:5000/prod/monitor/wordpress:${BUILD_NUMBER}'
+		      sh 'docker push dockerreg.conygre.com:5000/prod/monitor/wordpress:${BUILD_NUMBER}'
+          sh 'docker tag monitor/wordpress:latest dockerreg.conygre.com:5000/prod/monitor/wordpress:latest'
 		    }
 		  }
 		}
