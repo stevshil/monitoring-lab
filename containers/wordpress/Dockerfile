@@ -36,8 +36,13 @@ RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
 COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
 
 # Update entrypoint
-RUN sed -i '/exec "$@"/i\cd \/opt\/exporters' /usr/local/bin/docker-entrypoint.sh
-RUN sed -i '/exec "$@"/i\.\/disk_usage_exporter &' /usr/local/bin/docker-entrypoint.sh
-RUN sed -i '/exec "$@"/i\.\/node_exporter &' /usr/local/bin/docker-entrypoint.sh
-RUN sed -i '/exec "$@"/i\.\/process-exporter -config.path process-exporter.conf &' /usr/local/bin/docker-entrypoint.sh
-RUN sed -i '/exec "$@"/i\cd -' /usr/local/bin/docker-entrypoint.sh
+RUN sed -i '/exec "$@"/i\# Start Process exporter\n \
+cd /opt/exporters\n \
+./process-exporter -config.path process-exporter.conf &\n \
+# Start Node exporter\n \
+./node_exporter &\n \
+# Start disk usage\n \
+./disk_usage_exporter &\n \
+# Start netprobe\n \
+cd /opt/itrs/netprobe\n \
+./netprobe.linux_64 -port 7036 -nopassword &' /usr/local/bin/docker-entrypoint.sh

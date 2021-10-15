@@ -49,6 +49,3 @@ cd /opt/exporters\n \
 # Start netprobe\n \
 cd /opt/itrs/netprobe\n \
 ./netprobe.linux_64 -port 7036 -nopassword &' /usr/local/bin/docker-entrypoint.sh
-# COPY docker-entrypoint.sh.mariadb /usr/local/bin/docker-entrypoint.sh
-# RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-# ENTRYPOINT ["/start.sh"]
