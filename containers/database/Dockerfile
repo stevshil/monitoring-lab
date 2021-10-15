@@ -1,22 +1,17 @@
 #FROM mysql:5.7.19
 #FROM mariadb:10.2.39
 FROM mariadb:latest
-# RUN grep -r mariadb /etc/apt
-#RUN sed -i 's,deb http://archive.mariadb.org/mariadb-10.2.39/repo/ubuntu/ bionic main,deb [trusted=yes] http://archive.mariadb.org/mariadb-10.2.39/repo/ubuntu/ bionic main,' /etc/apt/sources.list.d/mariadb.list
-#RUN sed -i '/deb http:\/\/archive.mariadb.org\/mariadb-10.2.39\/repo\/ubuntu\/ bionic main/d' /etc/apt/sources.list.d/mariadb.list
-#COPY mariadb_repo_setup /tmp
 #RUN apt-get -y install ca-certificates
 #RUN update-ca-certificates -f
 RUN apt-get -y update
-#RUN apt-get -y install curl
-#RUN bash /tmp/mariadb_repo_setup
 RUN apt-get -y install git wget
 
 RUN git clone https://github.com/spring-projects/spring-petclinic.git /app
 RUN cp /app/src/main/resources/db/mysql/schema.sql /docker-entrypoint-initdb.d/01.sql
 RUN cp /app/src/main/resources/db/mysql/data.sql /docker-entrypoint-initdb.d/02.sql
 COPY exporter.sql /docker-entrypoint-initdb.d/03.sql
-COPY moodle.sql /docker-entrypoint-initdb.d/04.sql
+COPY wordpress.sql /docker-entrypoint-initdb.d/04.sql
+COPY wordpress-schema.sql /docker-entrypoint-initdb/05.sql
 
 # Install monitoring
 RUN wget https://github.com/ncabatoff/process-exporter/releases/download/v0.7.5/process-exporter-0.7.5.linux-amd64.tar.gz -O /tmp/process-exporter-0.7.5.linux-amd64.tar.gz

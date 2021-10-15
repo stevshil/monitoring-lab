@@ -1,7 +1,7 @@
 FROM wordpress:5.8-apache
 ENV WORDPRESS_DB_USER=root
 ENV WORDPRESS_DB_PASSWORD=petclinic
-ENV WORDPRESS_DB_NAME=moodle
+ENV WORDPRESS_DB_NAME=wordpress
 ENV WORDPRESS_DB_HOST=database
 ENV WORDPRESS_TABLE_PREFIX=wp_
 
@@ -12,8 +12,7 @@ RUN apt-get -y install wget
 RUN wget https://github.com/ncabatoff/process-exporter/releases/download/v0.7.5/process-exporter-0.7.5.linux-amd64.tar.gz -O /tmp/process-exporter-0.7.5.linux-amd64.tar.gz
 RUN mkdir /opt/exporters
 RUN cd /opt/exporters;
-RUN tar xvf /tmp/process-exporter-0.7.5.linux-amd64.tar.gz
-RUN mv process-exporter-0.7.5.linux-amd64/process-exporter /opt/exporters/process-exporter
+RUN tar xvf /tmp/process-exporter-0.7.5.linux-amd64.tar.gz; mv process-exporter-0.7.5.linux-amd64/process-exporter /opt/exporters/process-exporter
 RUN rm -rf process-exporter-0.7.5.linux-amd64
 RUN rm -f process-exporter-0.7.5.linux-amd64.tar.gz
 COPY process-exporter.conf /opt/exporters
@@ -26,6 +25,7 @@ COPY disk_usage_exporter.yaml /opt/exporters/disk_usage_exporter.yaml
 EXPOSE 9100
 EXPOSE 9995
 EXPOSE 9256
+EXPOSE 80
 EXPOSE 8080
 EXPOSE 8443
 
@@ -36,12 +36,8 @@ EXPOSE 8443
 # COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
 
 # Update entrypoint
-RUN sed -i '/exec "$@"/i\cd \/opt\/exporters' /opt/bitnami/scripts/moodle/entrypoint.sh
-RUN sed -i '/exec "$@"/i\.\/disk_usage_exporter &' /opt/bitnami/scripts/moodle/entrypoint.sh
-RUN sed -i '/exec "$@"/i\.\/node_exporter &' /opt/bitnami/scripts/moodle/entrypoint.sh
-RUN sed -i '/exec "$@"/i\.\/process-exporter -config.path process-exporter.conf &' /opt/bitnami/scripts/moodle/entrypoint.sh
-RUN sed -i '/exec "$@"/i\cd -' /opt/bitnami/scripts/moodle/entrypoint.sh
-RUN sed -i '/exec "$@"/i\chmod 777 /bitnami/moodledata' /opt/bitnami/scripts/moodle/entrypoint.sh
-# RUN sed -i '/exec "$@"/i\# Start netprobe\n \
-# cd /opt/itrs/netprobe\n \
-# ./netprobe.linux_64 -port 7036 -nopassword &' /opt/bitnami/scripts/moodle/entrypoint.sh
+RUN sed -i '/exec "$@"/i\cd \/opt\/exporters' /usr/local/bin/docker-entrypoint.sh
+RUN sed -i '/exec "$@"/i\.\/disk_usage_exporter &' /usr/local/bin/docker-entrypoint.sh
+RUN sed -i '/exec "$@"/i\.\/node_exporter &' /usr/local/bin/docker-entrypoint.sh
+RUN sed -i '/exec "$@"/i\.\/process-exporter -config.path process-exporter.conf &' /usr/local/bin/docker-entrypoint.sh
+RUN sed -i '/exec "$@"/i\cd -' /usr/local/bin/docker-entrypoint.sh
