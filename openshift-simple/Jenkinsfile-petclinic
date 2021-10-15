@@ -5,6 +5,7 @@ pipeline {
     string(name: 'DBSERVERNAME', defaultValue: 'database', description: 'Database servername for Petclinic')
     string(name: 'DBUSERNAME', defaultValue: 'root', description: 'Database username')
     string(name: 'DBPASSWORD', defaultValue: 'petclinic',  description: 'Databae user password')
+    string(name: 'DNS', defaultValue: 'openshift.conygre.com',description: 'The Domain name of your OpenShift server')
   }
   stages {
     stage("Clone Source") {
@@ -21,9 +22,10 @@ pipeline {
 		stage("Configure Petclinic") {
 		  steps {
 		    dir('openshift-simple/db') {
-          sh 'oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443'
-          sh 'oc project ${projectName}'
-		      sh 'oc new-app --docker-image=dockerreg.conygre.com:5000/prod/monitor/petclinic:latest --name=petclinic -e DBSERVERNAME=${DBSERVERNAME} -e DBUSERNAME=${DBUSERNAME} -e DBPASSWORD=${DBPASSWORD}'
+          sh '''oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443
+          oc project ${projectName}
+		      oc new-app --docker-image=dockerreg.conygre.com:5000/prod/monitor/petclinic:latest --name=petclinic -e DBSERVERNAME=${DBSERVERNAME} -e DBUSERNAME=${DBUSERNAME} -e DBPASSWORD=${DBPASSWORD}
+          oc expose svc/wordpress --hostname petclinic.${DNS} --port=80 --name=petclinc'''
 		    }
 		  }
 		}

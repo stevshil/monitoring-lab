@@ -1,17 +1,17 @@
 kind: "BuildConfig"
 apiVersion: "v1"
 metadata:
-  name: "moodle"
+  name: "wordpress"
   annotations:
-    openshift.io/build-config.name: moodle
+    openshift.io/build-config.name: wordpress
   labels:
-    build: moodle
-    buildconfig: moodle
-    openshift.io/build-config.name: moodle
+    build: wordpress
+    buildconfig: wordpress
+    openshift.io/build-config.name: wordpress
     openshift.io/build.start-policy: Serial
 spec:
   source:
-    contextDir: "containers/moodle"
+    contextDir: "containers/wordpress"
     git:
       ref: main
       uri: 'https://github.com/stevshil/monitoring-lab.git'
@@ -23,4 +23,4 @@ spec:
   output:
     to:
       kind: "ImageStreamTag"
-      name: "moodle:latest"
+      name: "wordpress:latest"
