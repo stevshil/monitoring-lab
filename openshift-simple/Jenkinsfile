@@ -22,30 +22,33 @@ pipeline {
 		stage("Build Database Docker Image") {
 		  steps {
 		    dir('containers') {
-		      sh 'docker-compose build database'
-		      sh 'docker tag monitor/database:latest dockerreg.conygre.com:5000/prod/monitor/database:${BUILD_NUMBER}'
-		      sh 'docker push dockerreg.conygre.com:5000/prod/monitor/database:${BUILD_NUMBER}'
-          sh 'docker tag monitor/database:latest dockerreg.conygre.com:5000/prod/monitor/database:latest'
+		      sh '''docker-compose build database
+		      docker tag monitor/database:latest dockerreg.conygre.com:5000/prod/monitor/database:${BUILD_NUMBER}
+		      docker push dockerreg.conygre.com:5000/prod/monitor/database:${BUILD_NUMBER}
+          docker tag monitor/database:latest dockerreg.conygre.com:5000/prod/monitor/database:latest
+          docker push dockerreg.conygre.com:5000/prod/monitor/database:latest'''
 		    }
 		  }
 		}
 		stage("Build wordpress Docker Image") {
 		  steps {
 		    dir('containers') {
-		      sh 'docker-compose build wordpress'
-		      sh 'docker tag monitor/wordpress:latest dockerreg.conygre.com:5000/prod/monitor/wordpress:${BUILD_NUMBER}'
-		      sh 'docker push dockerreg.conygre.com:5000/prod/monitor/wordpress:${BUILD_NUMBER}'
-          sh 'docker tag monitor/wordpress:latest dockerreg.conygre.com:5000/prod/monitor/wordpress:latest'
+		      sh '''docker-compose build wordpress
+		      docker tag monitor/wordpress:latest dockerreg.conygre.com:5000/prod/monitor/wordpress:${BUILD_NUMBER}
+		      docker push dockerreg.conygre.com:5000/prod/monitor/wordpress:${BUILD_NUMBER}
+          docker tag monitor/wordpress:latest dockerreg.conygre.com:5000/prod/monitor/wordpress:latest
+          docker push dockerreg.conygre.com:5000/prod/monitor/wordpress:latest'''
 		    }
 		  }
 		}
 		stage("Build Petclinic Docker Image") {
 		  steps {
 		    dir('containers') {
-		      sh 'docker-compose build petclinic'
-		      sh 'docker tag monitor/petclinic:latest dockerreg.conygre.com:5000/prod/monitor/petclinic:${BUILD_NUMBER}'
-		      sh 'docker push dockerreg.conygre.com:5000/prod/monitor/petclinic:${BUILD_NUMBER}'
-          sh 'docker tag monitor/petclinic:latest dockerreg.conygre.com:5000/prod/monitor/petclinic:latest'
+		      sh '''docker-compose build petclinic
+		      docker tag monitor/petclinic:latest dockerreg.conygre.com:5000/prod/monitor/petclinic:${BUILD_NUMBER}
+		      docker push dockerreg.conygre.com:5000/prod/monitor/petclinic:${BUILD_NUMBER}
+          docker tag monitor/petclinic:latest dockerreg.conygre.com:5000/prod/monitor/petclinic:latest
+          docker push dockerreg.conygre.com:5000/prod/monitor/petclinic:latest'''
 		    }
 		  }
 		}
