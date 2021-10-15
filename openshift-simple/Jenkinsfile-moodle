@@ -1,0 +1,44 @@
+pipeline {
+  agent any
+  parameters {
+    string(name: 'projectName', defaultValue: 'pc', description: 'OpenShift project name')
+    string(name: 'MOODLE_DATABASE_HOST', defaultValue: 'database', description: 'Database servername for Moodle')
+    string(name: 'MOODLE_DATABASE_USER', defaultValue: 'root', description: 'Database username')
+    password(name: 'MOODLE_DATABASE_PASSWORD', defaultValue: 'petclinic',  description: 'Database user password')
+    string(name: 'MOODLE_DATABASE_NAME',defaultValue: 'moodle', description: 'Moodle schema in database server')
+    string(name: 'MOODLE_USERNAME',defaultValue: 'admin', description: 'Moodle web user')
+    password(name: 'MOODLE_PASSWORD',defaultValue: 'admin123', description: 'Moodle Web user password')
+    string(name: 'MOODLE_SKIP_INSTALL',defaultValue: 'no', description: 'No for new installation, yes for update')
+  }
+  stages {
+    stage("Clone Source") {
+      steps {
+        checkout([$class: 'GitSCM',
+                    branches: [[name: "*/main"]],
+                    extensions: [
+                      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'environment']
+                    ],
+        userRemoteConfigs: [[url: "https://github.com/stevshil/monitoring-lab.git"]]
+                ])
+      }
+    }
+    stage("Remove existing deployment") {
+      steps {
+        dir('openshift-simple/db') {
+          sh '''oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443
+          oc project ${projectName}
+          oc delete dc moodle || echo "OK"'''
+        }
+      }
+    }
+		stage("Configure Moodle") {
+		  steps {
+		    dir('openshift-simple/db') {
+          sh '''oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443
+          oc project ${projectName}
+		      oc new-app --docker-image=dockerreg.conygre.com:5000/prod/monitor/moodle:latest --name=moodle -e MOODLE_DATABASE_HOST=${MOODLE_DATABASE_HOST} -e MOODLE_DATABASE_USER=${MOODLE_DATABASE_USER} -e MOODLE_DATABASE_PASSWORD="${MOODLE_DATABASE_PASSWORD}" -e MOODLE_USERNAME=${MOODLE_USERNAME} -e MOODLE_PASSWORD="${MOODLE_PASSWORD}"  -e MOODLE_DATABASE_NAME=${MOODLE_DATABASE_NAME} -e MYSQL_CLIENT_DATABASE_HOST=${MOODLE_DATABASE_HOST}'''
+		    }
+		  }
+		}
+  }
+}

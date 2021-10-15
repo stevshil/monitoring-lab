@@ -26,30 +26,24 @@ services:
       - DBPASSWORD=petclinic
     ports:
       - 1080:8080
-  moodle:
+  wordpress:
     build:
-      context: moodle
-      dockerfile: Dockerfile
-    image: monitor/moodle
-    container_name: moodle
+      context: wordpress
+    image: monitor/wordpress
+    container_name: wordpress
     volumes:
       - type: volume
-        source: moodle-data
-        target: /bitnami/moodledata
-    environment:
-      - MOODLE_USERNAME=admin
-      - MOODLE_PASSWORD=admin123
-      - MOODLE_DATABASE_USER=root
-      - MOODLE_DATABASE_PASSWORD=petclinic
-      - MOODLE_DATABASE_NAME=moodle
-      - MOODLE_DATABASE_HOST=database
-      - MYSQL_CLIENT_DATABASE_HOST=database
-      - MYSQL_CLIENT_DATABASE_ROOT_PASSWORD=petclinic
-      - BITNAMI_DEBUG=true
-      - MOODLE_SKIP_INSTALL=no
+        source: wp-data
+        target: /var/www/html
     ports:
-      - 1180:8080
-      - 1443:8443
+      - 1180:80
+      - 1280:8080
+    environment:
+    - WORDPRESS_DB_USER=root
+    - WORDPRESS_DB_PASSWORD=petclinic
+    - WORDPRESS_DB_NAME=wordpress
+    - WORDPRESS_DB_HOST=database
+    - WORDPRESS_TABLE_PREFIX=wp_
   dbmon:
     image: prom/mysqld-exporter:v0.13.0
     container_name: dbmon
@@ -93,4 +87,4 @@ services:
 volumes:
   db-data:
   prom-data:
-  moodle-data:
+  wp-data:

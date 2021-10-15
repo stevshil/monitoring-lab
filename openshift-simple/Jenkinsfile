@@ -1,0 +1,53 @@
+pipeline {
+  agent any
+  stages {
+    stage("Clone Source") {
+      steps {
+        checkout([$class: 'GitSCM',
+                    branches: [[name: "*/main"]],
+                    extensions: [
+                      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'environment']
+                    ],
+        userRemoteConfigs: [[url: "https://github.com/stevshil/monitoring-lab.git"]]
+                ])
+      }
+    }
+		stage("Ensure dependent files are available") {
+		  steps {
+		    dir('.') {
+		      sh './setup.sh'
+		    }
+		  }
+		}
+		stage("Build Database Docker Image") {
+		  steps {
+		    dir('containers') {
+		      sh 'docker-compose build database'
+		      sh 'docker tag monitor/database:latest dockerreg.conygre.com:5000/prod/monitor/database:${BUILD_NUMBER}'
+		      sh 'docker push dockerreg.conygre.com:5000/prod/monitor/database:${BUILD_NUMBER}'
+          sh 'docker tag monitor/database:latest dockerreg.conygre.com:5000/prod/monitor/database:latest'
+		    }
+		  }
+		}
+		stage("Build Moodle Docker Image") {
+		  steps {
+		    dir('containers') {
+		      sh 'docker-compose build moodle'
+		      sh 'docker tag monitor/moodle:latest dockerreg.conygre.com:5000/prod/monitor/moodle:${BUILD_NUMBER}'
+		      sh 'docker push dockerreg.conygre.com:5000/prod/monitor/moodle:${BUILD_NUMBER}'
+          sh 'docker tag monitor/moodle:latest dockerreg.conygre.com:5000/prod/monitor/moodle:latest'
+		    }
+		  }
+		}
+		stage("Build Petclinic Docker Image") {
+		  steps {
+		    dir('containers') {
+		      sh 'docker-compose build petclinic'
+		      sh 'docker tag monitor/petclinic:latest dockerreg.conygre.com:5000/prod/monitor/petclinic:${BUILD_NUMBER}'
+		      sh 'docker push dockerreg.conygre.com:5000/prod/monitor/petclinic:${BUILD_NUMBER}'
+          sh 'docker tag monitor/petclinic:latest dockerreg.conygre.com:5000/prod/monitor/petclinic:latest'
+		    }
+		  }
+		}
+  }
+}

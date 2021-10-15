@@ -12,16 +12,16 @@ This project has been created to spin up a simple monitoring training environmen
 The applications that will be monitored are;
 
 * PetClinic
-* Moodle
+* Wordpress
 * MySQL
   - Monitored through a separate container running mysqld_node_exporter
 
 When using the docker-compose system you can point your web browser at the following ports;
 * PetClinic
   - http://localhost:1080
-* Moodle
+* Wordpress
   - http://localhost:1180
-  - http://localhost:8443
+  - http://localhost:1280
 * Prometheus
   - Metrics
     - http://localhost:9090/metrics
@@ -29,6 +29,20 @@ When using the docker-compose system you can point your web browser at the follo
     - http://localhost:9090/graph
 * Grafana
   - http://localhost:3000
+
+# Set up and running
+
+To work with this system you will need to first install some dependent files from the web.  This is done by running;
+
+```
+./setup.sh
+```
+
+Once you have done this you can then build and start the environment with;
+
+```
+docker-compose up -d
+```
 
 # References
 
