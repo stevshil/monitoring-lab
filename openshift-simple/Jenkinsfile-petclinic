@@ -19,9 +19,18 @@ pipeline {
                 ])
       }
     }
+    stage("Remove existing deployment") {
+      steps {
+        dir('openshift-simple') {
+          sh '''oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443
+          oc project ${projectName}
+          oc delete dc petclinic || echo "OK"'''
+        }
+      }
+    }
 		stage("Configure Petclinic") {
 		  steps {
-		    dir('openshift-simple/db') {
+		    dir('openshift-simple') {
           sh '''oc login -u developer -p developer --insecure-skip-tls-verify=true https://localhost:8443
           oc project ${projectName}
 		      oc new-app --docker-image=dockerreg.conygre.com:5000/prod/monitor/petclinic:latest --name=petclinic -e DBSERVERNAME=${DBSERVERNAME} -e DBUSERNAME=${DBUSERNAME} -e DBPASSWORD=${DBPASSWORD}
