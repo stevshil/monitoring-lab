@@ -12,16 +12,16 @@ This project has been created to spin up a simple monitoring training environmen
 The applications that will be monitored are;
 
 * PetClinic
-* Moodle
+* Wordpress
 * MySQL
   - Monitored through a separate container running mysqld_node_exporter
 
 When using the docker-compose system you can point your web browser at the following ports;
 * PetClinic
   - http://localhost:1080
-* Moodle
+* Wordpress
   - http://localhost:1180
-  - http://localhost:8443
+  - http://localhost:1280
 * Prometheus
   - Metrics
     - http://localhost:9090/metrics
