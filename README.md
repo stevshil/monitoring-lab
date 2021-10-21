@@ -13,6 +13,9 @@ The applications that will be monitored are;
 
 * PetClinic
 * Wordpress
+  - Login for the web front end is
+    - Username: admin
+    - Password: admin123
 * MySQL
   - Monitored through a separate container running mysqld_node_exporter
 
