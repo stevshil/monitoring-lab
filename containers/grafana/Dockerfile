@@ -21,6 +21,7 @@ COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 ENV ADMIN_PW=admin123
 EXPOSE 3000
+EXPOSE 7036
 
 # Install ITRS Geneos netprobe
 COPY geneos-netprobe-5.8.2-linux-x64.tar.gz /tmp
