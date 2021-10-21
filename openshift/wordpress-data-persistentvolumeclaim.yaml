@@ -3,8 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: moodle-data
-  name: moodle-data
+    io.kompose.service: wordpress-data
+  name: wordpress-data
 spec:
   accessModes:
     - ReadWriteOnce

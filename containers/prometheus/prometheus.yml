@@ -17,12 +17,12 @@ scrape_configs:
         labels:
           group: 'petclinic'
 
-  - job_name: 'moodle'
+  - job_name: 'wordpress'
     # scrape_interval: 5s
     static_configs:
-      - targets: ['moodle:9100','moodle:9995','moodle:9256']
+      - targets: ['wordpress:9100','wordpress:9995','wordpress:9256']
         labels:
-          group: 'moodle'
+          group: 'wordpress'
 
   - job_name: 'Database'
     static_configs:
