@@ -11,7 +11,7 @@ RUN cp /app/src/main/resources/db/mysql/schema.sql /docker-entrypoint-initdb.d/0
 RUN cp /app/src/main/resources/db/mysql/data.sql /docker-entrypoint-initdb.d/02.sql
 COPY exporter.sql /docker-entrypoint-initdb.d/03.sql
 COPY wordpress.sql /docker-entrypoint-initdb.d/04.sql
-COPY wordpress-schema.sql /docker-entrypoint-initdb/05.sql
+# COPY wordpress-schema.sql /docker-entrypoint-initdb/05.sql
 
 # Install monitoring
 RUN wget https://github.com/ncabatoff/process-exporter/releases/download/v0.7.5/process-exporter-0.7.5.linux-amd64.tar.gz -O /tmp/process-exporter-0.7.5.linux-amd64.tar.gz
