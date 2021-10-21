@@ -5,6 +5,9 @@ ENV WORDPRESS_DB_NAME=wordpress
 ENV WORDPRESS_DB_HOST=database
 ENV WORDPRESS_TABLE_PREFIX=wp_
 
+COPY wp-config.php /var/www/html/wp-config.php
+RUN mkdir /var/www/html/wp-content/upgrade
+
 RUN apt-get -y update
 RUN apt-get -y install wget
 
