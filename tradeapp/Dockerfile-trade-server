@@ -1,25 +1,26 @@
 FROM maven:3.6.3-jdk-11 AS compile
-RUN git clone https://github.com/spring-projects/spring-petclinic.git /usr/src/mymaven
+ADD . /usr/src/mymaven
 WORKDIR /usr/src/mymaven
-# Add prometheus monitoring to pom
-RUN sed -i '/^  <\/dependencies>/i\    <dependency>\n      <groupId>org.springframework.boot<\/groupId>\n      <artifactId>spring-boot-starter-actuator<\/artifactId>\n    <\/dependency>\n    <dependency>\n      <groupId>io.micrometer<\/groupId>\n      <artifactId>micrometer-registry-prometheus<\/artifactId>\n      <scope>runtime<\/scope>\n    <\/dependency>\n    <dependency>\n      <groupId>org.springframework.boot<\/groupId>\n      <artifactId>spring-boot-starter-aop<\/artifactId>\n    <\/dependency>' pom.xml
-RUN cat pom.xml
 RUN mvn -Dmaven.test.skip=true package
 RUN ls /usr/src/mymaven/target
 
-FROM openjdk:11
-RUN mkdir /app
-RUN apt-get -y update
-RUN apt-get -y install netcat
-ENV DBSERVERNAME=mysql
-ENV DBPASSWORD=petclinic
-ENV DBUSERNAME=root
-COPY --from=compile /usr/src/mymaven/target/*.jar /app/petclinic.jar
-COPY application.properties.tmplt /app/
-COPY petclinic.sh /app/petclinic.sh
-RUN chmod +x /app/petclinic.sh
+FROM openjdk:11-jdk
+MAINTAINER Neueda and TPS
+LABEL Version="1.0.0"
+LABEL Description="Docker container to run Martins trade app"
+EXPOSE 8080 7091 7036
 
-# Install monitoring
+# Add monitoring
+RUN mkdir -p /mon/log
+RUN wget https://www.dropbox.com/s/gtsutpi79jdwkdj/geneos-netprobe-5.8.2-linux-x64.tar.gz?dl=0 -O /tmp/geneos-netprobe-5.8.2.linux-x64.tar.gz
+RUN cd /mon && tar xvf /tmp/geneos-netprobe-5.8.2.linux-x64.tar.gz
+RUN wget https://artifacts.elastic.co/downloads/logstash/logstash-8.3.2-linux-x86_64.tar.gz -O /tmp/logstash.tgz
+RUN cd /mon && tar xvf /tmp/logstash.tgz
+RUN mkdir /mon/logstash-8.3.2/conf
+COPY logstash/conf/* /mon/logstash-8.3.2/conf/
+# RUN sed -i 's/^-XX:+UseParNewGC/#-XX:+UseParNewGC/' /mon/logstash-6.2.4/config/jvm.options
+
+# Add Prometheus
 RUN wget https://github.com/ncabatoff/process-exporter/releases/download/v0.7.5/process-exporter-0.7.5.linux-amd64.tar.gz -O /tmp/process-exporter-0.7.5.linux-amd64.tar.gz
 RUN mkdir /opt/exporters
 RUN cd /opt/exporters;
@@ -39,11 +40,15 @@ EXPOSE 9995
 EXPOSE 9256
 EXPOSE 8080
 
-# Install ITRS Geneos netprobe
-COPY geneos-netprobe-5.8.2-linux-x64.tar.gz /tmp
-RUN mkdir -p /opt/itrs/netprobe
-RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
-COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
 
+# Add application
+RUN mkdir /app
+COPY --from=compile /usr/src/mymaven/target/trade-app-1.0.0-exec.jar /app/
+RUN mkdir /app/config
+COPY application.properties /app/config/
+COPY application.properties /app/
+COPY startmon.sh /app/start.sh
+RUN chmod +x /app/start.sh
+RUN ls -R /app
 WORKDIR /app
-ENTRYPOINT ["./petclinic.sh"]
+ENTRYPOINT [ "./start.sh" ]

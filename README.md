@@ -12,6 +12,9 @@ This project has been created to spin up a simple monitoring training environmen
 The applications that will be monitored are;
 
 * PetClinic
+  - Has Prometheus monitoring at /manage/metrics
+  - Other metrics through /manage which returns the list of subcategories
+  - JMX exposed Metrics
 * Wordpress
   - Login for the web front end is
     - Username: admin

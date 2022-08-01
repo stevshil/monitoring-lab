@@ -1,0 +1,25 @@
+global:
+  scrape_interval:     15s # By default, scrape targets every 15 seconds.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds.
+
+rule_files:
+  - 'prometheus.rules.yml'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'trades-server'
+    # scrape_interval: 5s
+    static_configs:
+      - targets: ['trades-server:9100','trades-server:9995','trades-server:9256']
+        labels:
+          group: 'trades-server'
+
+  - job_name: 'tradesdb'
+    static_configs:
+      # 9104 = mysqld_exporter, 9256 Process exporter, 9995 disk exporter, 9100 node
+      - targets: ['dbmon:9104','tradesdb:9995','tradesdb:9100','tradesdb:9256']
+        labels:
+          group: 'tradesdb'

@@ -1,0 +1,267 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.neueda</groupId>
+	<artifactId>trade-app</artifactId>
+	<version>1.0.0</version>
+	<packaging>jar</packaging>
+	<name>Simple Trade Recording Application</name>
+	<description>Trade Recording</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.3.RELEASE</version>
+		<relativePath></relativePath>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<springVersion>4.2.1.RELEASE</springVersion>
+		<main.class>com.neueda.trade.server.TradeServer</main.class>
+		<active.profile>prod</active.profile>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>injector</id>
+			<properties>
+				<main.class>com.neueda.trade.injector.Injector</main.class>
+				<active.profile>injector</active.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>injector-activemq</id>
+			<properties>
+				<main.class>com.neueda.trade.injector.Injector</main.class>
+				<active.profile>injector,injector-activemq</active.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>injector-wildfly</id>
+			<properties>
+				<main.class>com.neueda.trade.injector.Injector</main.class>
+				<active.profile>injector,injector-wildfly</active.profile>
+			</properties>
+			<dependencies>
+				<!-- prometheus -->
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-actuator</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>io.micrometer</groupId>
+					<artifactId>micrometer-registry-prometheus</artifactId>
+					<scope>runtime</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-aop</artifactId>
+				</dependency>
+				<!-- Wildfly client -->
+				<dependency>
+					<groupId>org.wildfly</groupId>
+					<artifactId>wildfly-jms-client-bom</artifactId>
+					<version>10.1.0.Final</version>
+					<type>pom</type>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>generator</id>
+			<properties>
+				<main.class>com.neueda.trade.injector.Generator</main.class>
+				<active.profile>injector</active.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>compliance</id>
+			<properties>
+				<main.class>com.neueda.trade.injector.ComplianceEngine</main.class>
+				<active.profile>injector</active.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>execution</id>
+			<properties>
+				<main.class>com.neueda.trade.injector.ExecutionEngine</main.class>
+				<active.profile>injector</active.profile>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>${main.class}</mainClass>
+					<profiles>
+						<profile>${active.profile}</profile>
+					</profiles>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<classifier>exec</classifier>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.neueda.trade.server.TradeServer</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<warSourceDirectory>src/main/webapp/static</warSourceDirectory>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+		</plugins>
+		<resources>
+			<!-- needed to get webapp included with JAR plugin -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+			</resource>
+		</resources>
+	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>trades.app</id>
+			<name>Trade Recording Application</name>
+			<url>file://c:/temp/</url>
+		</repository>
+	</distributionManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>java-hamcrest</artifactId>
+			<version>2.0.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!-- needed for WAR file deployment to WildFly to avoid cast exception 
+			when using undertow -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-activemq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<exclusions>
+		        <exclusion>
+		            <groupId>org.hamcrest</groupId>
+		            <artifactId>hamcrest-library</artifactId>
+		        </exclusion>
+		    </exclusions>
+		</dependency>
+
+		<!-- JSON data binding -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
+		<!-- MySQL database -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+
+		<!-- JMS -->
+		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-jms</artifactId> 
+			</dependency> -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-broker</artifactId>
+		</dependency>
+
+		<!-- Swagger support -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.2.2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.2.2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>swagger-ui</artifactId>
+			<version>3.0.10</version>
+		</dependency>
+	</dependencies>
+</project>

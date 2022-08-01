@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Script to select what to run
+
+echo -n "Do you want ITRS and Wordpress (y/n)? "
+read reply
+
+cd containers
+
+if [[ replay == y* ]]
+then
+  cp composers/all.yml docker-compose.yml
+else
+  cp composers/pc-db-prom-graf.yml docker-compose.yml
+fi
+
+docker-compose up -d
+
+# Reset to all
+cp composers/all.yml docker-compose.yml

@@ -1,0 +1,17 @@
+FROM maven:3.6.3-jdk-11 AS compile
+ADD . /usr/src/mymaven
+WORKDIR /usr/src/mymaven
+RUN mvn -Dmaven.test.skip=true package
+RUN ls /usr/src/mymaven/target
+
+FROM openjdk:11-jdk
+MAINTAINER Neueda and TPS
+LABEL Version="1.0.0"
+LABEL Description="Docker container to run Martins trade injector over REST"
+RUN mkdir /app
+COPY --from=compile /usr/src/mymaven/target/trade-app-1.0.0-exec.jar /app/
+ENTRYPOINT [ \
+    "java", "-cp", "/app/trade-app-1.0.0-exec.jar", \
+    "-Dspring.profiles.active=${INJECTOR_APP},${INJECTOR_TRANSPORT},docker", \
+    "-Dloader.main=${INJECTOR_CLASS}", "org.springframework.boot.loader.PropertiesLauncher" \
+]
