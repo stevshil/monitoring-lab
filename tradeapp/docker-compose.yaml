@@ -33,7 +33,9 @@ services:
   itrs:
     build:
       context: itrs
-    image: steve353/monitorlab-itrs:1.0
+      dockerfile: Dockerfile.ubuntu
+    image: steve353/monitorlab-itrs:2.0
+    hostname: b4abc4b146ad
     container_name: itrs
     ports:
       - 7039:7039
@@ -45,7 +47,7 @@ services:
         reservations:
           memory: 50M
     volumes:
-      - ${PWD}/ITRSLic:/opt/itrs/gateway/licensedir
+      - ${PWD}/ITRSLic:/opt/itrs/licensedir
 
       
   tradesdb:

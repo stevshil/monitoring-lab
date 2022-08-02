@@ -4,6 +4,17 @@
 # ldconfig /opt/itrs/gateway /opt/itrs/netprobe /opt/itrs/licd /usr/lib
 export JAVA_HOME=/usr/lib/jvm/jre
 
+# Copy in custom ITRS gateway configuration
+if [ -d /opt/itrs/customconfig ]
+then
+  if (( $(ls | wc -l) > 0 ))
+  then
+    cp /opt/itrs/customconfig/* /opt/itrs/gateway/
+  fi
+fi
+
+echo -en "\027\053\0254\037" >/etc/hostid
+echo "b4abc4b146ad" >/etc/hostname
 # Start the license daemon
 cd /opt/itrs/licd
 ./licd.linux_64 &

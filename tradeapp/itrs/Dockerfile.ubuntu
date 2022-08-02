@@ -1,0 +1,54 @@
+FROM ubuntu:focal
+RUN apt-get -y update
+RUN apt-get -y install wget
+
+# Copy mysql connector for ITRS to use with MySQL dbs
+# RUN wget https://downloads.mysql.com/archives/get/p/19/file/mysql-connector-c-6.1.11-linux-glibc2.12-x86_64.tar.gz -O /tmp/mysql-connector-c-6.1.11-linux-glibc2.12-x86_64.tar.gz
+# RUN cd /tmp && tar xvf mysql-connector-c-6.1.11-linux-glibc2.12-x86_64.tar.gz
+# RUN cd /tmp/mysql-connector-c-6.1.11-linux-glibc2.12-x86_64/lib && mv * /lib64
+COPY files/libmysql.tgz /tmp
+RUN cd / && tar xvf /tmp/libmysql.tgz
+
+# Add Java
+RUN apt-get -y install openjdk-11-jdk
+
+# Install the Gateway, Netprobe and License Daemon
+RUN wget https://www.dropbox.com/s/0lurjo3ntpol3l3/geneos-gateway-5.8.2-linux-x64.tar.gz?dl=0 -O /tmp/geneos-gateway-5.8.2-linux-x64.tar.gz
+RUN wget https://www.dropbox.com/s/gtsutpi79jdwkdj/geneos-netprobe-5.8.2-linux-x64.tar.gz?dl=0 -O /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
+RUN wget https://www.dropbox.com/s/ie9qqprqv4ctnd7/geneos-licd-5.7.1-linux-x64.tar.gz?dl=0 -O /tmp/geneos-licd-5.7.1-linux-x64.tar.gz
+RUN mkdir -p /opt/itrs/gateway
+RUN cd /opt/itrs; tar xvf /tmp/geneos-gateway-5.8.2-linux-x64.tar.gz
+RUN mkdir -p /opt/itrs/netprobe
+RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
+RUN mkdir -p /opt/itrs/
+RUN cd /opt/itrs/; tar xvf /tmp/geneos-licd-5.7.1-linux-x64.tar.gz
+
+# Set the libraries
+COPY files/licd.conf /etc/ld.so.conf.d/licd.conf
+COPY files/itrs.conf /etc/ld.so.conf.d/itrs.conf
+COPY files/netprobe.conf /etc/ld.so.conf.d/netprobe.conf
+
+# Copy the samples
+#COPY files/ITRS/gateway.setup.xml /opt/itrs/gateway
+COPY files/setup/ITRS/* /opt/itrs/gateway/
+
+# Set up license
+RUN mkdir /opt/itrs/gateway/licensedir
+RUN ln -s /opt/itrs/licensedir/gateway.lic /opt/itrs/licd/geneos.lic
+# Remove tmp files
+RUN rm /tmp/*.gz
+
+# Set hostid
+RUN echo -en "\027\053\0254\037" >/etc/hostid
+# The host id is 1fac2b17
+RUN echo "b4abc4b146ad" >/etc/hostname
+
+# Start up
+COPY files/start.sh /start.sh
+RUN chmod +x /start.sh
+VOLUME /opt/itrs/licensedir
+# Map your own gateway configuration
+VOLUME /opt/itrs/customconfig
+EXPOSE 7036
+EXPOSE 7039
+ENTRYPOINT ["/start.sh"]
