@@ -41,6 +41,7 @@ services:
     - WORDPRESS_DB_HOST=database
     - WORDPRESS_TABLE_PREFIX=wp_
     - WORDPRESS_PORT=1180
+    - WORDPRESS_HOST=13.250.61.239
   dbmon:
     image: prom/mysqld-exporter:v0.13.0
     container_name: dbmon
