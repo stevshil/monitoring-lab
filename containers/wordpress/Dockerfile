@@ -5,6 +5,7 @@ ENV WORDPRESS_DB_NAME=wordpress
 ENV WORDPRESS_DB_HOST=database
 ENV WORDPRESS_TABLE_PREFIX=wp_
 ENV WORDPRESS_PORT=1180
+ENV WORDPRESS_HOST=13.250.61.239
 
 COPY wp-config.php /var/www/html/wp-config.php
 RUN mkdir /var/www/html/wp-content/upgrade

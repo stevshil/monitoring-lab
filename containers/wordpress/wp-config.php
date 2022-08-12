@@ -49,8 +49,9 @@ define( 'DB_USER', getenv_docker('WORDPRESS_DB_USER', 'example username') );
 /** MySQL database password */
 define( 'DB_PASSWORD', getenv_docker('WORDPRESS_DB_PASSWORD', 'example password') );
 
-define('WP_HOME',$_SERVER['HTTP_X_FORWARDED_HOST'].':'.getenv_docker('WORDPRESS_PORT','8080'));
-define('WP_SITEURL',$_SERVER['HTTP_X_FORWARDED_HOST'].':'.getenv_docker('WORDPRESS_PORT','8080'));
+define('WP_HOME',getenv_docker('WORDPRESS_HOST',"localhost");
+define('WP_SITE',getenv_docker('WORDPRESS_HOST',"localhost");
+// define('WP_SITEURL',$_SERVER['HTTP_X_FORWARDED_HOST'].':'.getenv_docker('WORDPRESS_PORT','8080'));
 
 /**
  * Docker image fallback values above are sourced from the official WordPress installation wizard:
