@@ -31,10 +31,6 @@ services:
       context: wordpress
     image: monitor/wordpress
     container_name: wordpress
-    volumes:
-      - type: volume
-        source: wp-data
-        target: /var/www/html
     ports:
       - 1180:8001
       - 1280:8080
