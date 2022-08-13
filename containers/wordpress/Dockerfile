@@ -4,11 +4,11 @@ ENV WORDPRESS_DB_PASSWORD=petclinic
 ENV WORDPRESS_DB_NAME=wordpress
 ENV WORDPRESS_DB_HOST=database
 ENV WORDPRESS_TABLE_PREFIX=wp_
-ENV WORDPRESS_PORT=1180
-ENV WORDPRESS_HOST=13.250.61.239
+ENV WORDPRESS_HOST=13.250.61.239:1180
 
 COPY wp-config.php /var/www/html/wp-config.php
 RUN mkdir /var/www/html/wp-content/upgrade
+COPY migrate.php /var/www/html/migrate.php
 
 RUN apt-get -y update
 RUN apt-get -y install wget
@@ -54,6 +54,8 @@ cd /opt/exporters\n \
 ./node_exporter &\n \
 # Start disk usage\n \
 ./disk_usage_exporter &\n \
+# Migrate the DB \n \
+php /var/www/html/migrate.php \n \
 # Start netprobe\n \
 cd /opt/itrs/netprobe\n \
 ./netprobe.linux_64 -port 7036 -nopassword &' /usr/local/bin/docker-entrypoint.sh
