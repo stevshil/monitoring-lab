@@ -54,8 +54,8 @@ cd /opt/exporters\n \
 ./node_exporter &\n \
 # Start disk usage\n \
 ./disk_usage_exporter &\n \
-# Migrate the DB \n \
-php /var/www/html/migrate.php \n \
+# # Migrate the DB \n \
+# php /var/www/html/migrate.php \n \
 # Start netprobe\n \
 cd /opt/itrs/netprobe\n \
 ./netprobe.linux_64 -port 7036 -nopassword &' /usr/local/bin/docker-entrypoint.sh

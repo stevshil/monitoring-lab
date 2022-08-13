@@ -10,7 +10,8 @@ RUN git clone https://github.com/spring-projects/spring-petclinic.git /app
 RUN cp /app/src/main/resources/db/mysql/schema.sql /docker-entrypoint-initdb.d/01.sql
 RUN cp /app/src/main/resources/db/mysql/data.sql /docker-entrypoint-initdb.d/02.sql
 COPY exporter.sql /docker-entrypoint-initdb.d/03.sql
-COPY wordpress.sql /docker-entrypoint-initdb.d/04.sql
+RUN echo "create database wordpress;" >/docker-entrypoint-initdb.d/05.sql
+# COPY wordpress.sql /docker-entrypoint-initdb.d/04.sql
 # COPY wordpress-schema.sql /docker-entrypoint-initdb/05.sql
 
 # Install monitoring
