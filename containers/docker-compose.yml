@@ -10,10 +10,11 @@ services:
         source: db-data
         target: /var/lib/mysql
     ports:
-      - 3316:3306
+      - ${DB_PORT}:3306
     environment:
-      - MYSQL_ROOT_PASSWORD=petclinic
-      - MYSQL_DATABASE=petclinic
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - WORDPRESS_HOST=${WP_HOST}
   petclinic:
     build:
       context: petclinic
@@ -21,27 +22,25 @@ services:
     image: monitor/petclinic
     container_name: petclinic
     environment:
-      - DBSERVERNAME=database
+      - DBSERVERNAME=${DBSERVERNAME}
       - DBUSERNAME=root
-      - DBPASSWORD=petclinic
+      - DBPASSWORD=${DB_NAME}
     ports:
-      - 1080:8080
+      - ${PETCLINIC_PORT}:8080
   wordpress:
     build:
       context: wordpress
     image: monitor/wordpress
     container_name: wordpress
     ports:
-      - 1180:8001
+      - ${WORDPRESS_PORT}:8001
       - 1280:8080
     environment:
     - WORDPRESS_DB_USER=root
-    - WORDPRESS_DB_PASSWORD=petclinic
+    - WORDPRESS_DB_PASSWORD=${DB_PASSWORD}
     - WORDPRESS_DB_NAME=wordpress
-    - WORDPRESS_DB_HOST=database
+    - WORDPRESS_DB_HOST=${DBSERVERNAME}
     - WORDPRESS_TABLE_PREFIX=wp_
-    - WORDPRESS_PORT=1180
-    - WORDPRESS_HOST=13.250.61.239
   dbmon:
     image: prom/mysqld-exporter:v0.13.0
     container_name: dbmon
@@ -58,39 +57,39 @@ services:
         source: prom-data
         target: /var/lib/prometheus
     ports:
-      - 9100:9100
-      - 9090:9090
+      - ${PROMETHEUS_PORT}:9100
+      - ${PROMETHEUS_PORT2}:9090
   grafana:
     build:
       context: grafana
     image: monitor/grafana
     container_name: grafana
     ports:
-      - 3000:3000
+      - ${GRAFANA_PORT}:3000
   dbclient:
     build:
       context: dbclient
     image: monitor/dbclient
     container_name: dbclient
 
-  itrs:
-      build:
-        context: itrs
-        dockerfile: Dockerfile.ubuntu
-      image: steve353/monitorlab-itrs:2.0
-      hostname: b4abc4b146ad
-      container_name: itrs
-      ports:
-        - 7039:7039
-        - 7036:7036
-      deploy:
-        resources:
-          limits:
-            memory: 200M
-          reservations:
-            memory: 50M
-      volumes:
-        - ${PWD}/ITRSLic:/opt/itrs/licensedir
+  # itrs:
+  #     build:
+  #       context: itrs
+  #       dockerfile: Dockerfile.ubuntu
+  #     image: steve353/monitorlab-itrs:2.0
+  #     hostname: b4abc4b146ad
+  #     container_name: itrs
+  #     ports:
+  #       - 7039:7039
+  #       - 7036:7036
+  #     deploy:
+  #       resources:
+  #         limits:
+  #           memory: 200M
+  #         reservations:
+  #           memory: 50M
+  #     volumes:
+  #       - ${PWD}/ITRSLic:/opt/itrs/licensedir
 
 volumes:
   db-data:

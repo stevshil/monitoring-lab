@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Please run this script as:
+#     source env-setup
+
+export DB_PORT=3316
+export DB_PASSWORD=petclinic
+export DB_NAME=petclinic
+export WORDPRESS_PORT=1180
+export WP_HOST=192.168.1.118:${WORDPRESS_PORT}
+export DBSERVERNAME=database
+export PETCLINIC_PORT=1080
+export PROMETHEUS_PORT=9100
+export PROMETHEUS_PORT2=9090
+export GRAFANA_PORT=3000
