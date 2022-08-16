@@ -1,0 +1,14 @@
+pipeline {
+    agent any
+    stages {
+        stage('Starting All Services'){
+            steps {
+                sh '''
+                source ./env-setup
+                cd containers
+                docker-compose start
+                '''
+            }
+        }
+    }
+}

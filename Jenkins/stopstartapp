@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    parameters {
+        choice(
+            name: 'Start_or_Stop',
+            choices: ["start","stop"],
+            description: 'Do you wish to Start or Stop the application?'
+        )
+        choice(
+            name: 'Application',
+            choices: ["database","petclinic","wordpress","dbmon","prometheus","grafana"].
+            description: "Which application do you wish to start or stop?"
+        )
+    }
+    stages {
+        stage('Managing Application'){
+            steps {
+                sh '''
+                source ./env-setup
+                cd containers
+                docker-compose ${Start_or_Stop} ${Application}
+                '''
+            }
+        }
+    }
+}

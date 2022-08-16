@@ -1,0 +1,14 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build Wordpress'){
+            steps {
+                sh '''
+                source ./env-setup
+                cd containers
+                docker-compose build
+                '''
+            }
+        }
+    }
+}

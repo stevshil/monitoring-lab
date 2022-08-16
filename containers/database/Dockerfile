@@ -1,6 +1,5 @@
-#FROM mysql:5.7.19
-#FROM mariadb:10.2.39
-FROM mariadb:latest
+FROM mariadb:jammy
+# FROM mariadb:latest
 ENV WORDPRESS_HOST=192.168.10.118:1180
 
 #RUN apt-get -y install ca-certificates

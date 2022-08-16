@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+    parameters {
+        password(name: 'PASSWORD', defaultValue: 'petclinic', description: 'What is the DB password')
+    }
+    stages {
+        stage('Database Backup'){
+            steps {
+                sh '''
+                source ./env-setup
+                cd containers
+                [ ! -d /var/tmp/dbbackups ] && mkdir /var/tmp/dbbackups
+                backupdir=/var/tmp/dbbackups
+                docker exec -i database mysqldump -p${PASSWORD} -u root petclinic >$backupdir/petclinic.sql
+                '''
+            }
+        }
+    }
+}
