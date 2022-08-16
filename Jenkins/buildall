@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Build Wordpress'){
+        stage('Build All'){
             steps {
                 sh '''
                 source ./env-setup

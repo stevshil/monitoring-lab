@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build Database'){
+            steps {
+                sh '''
+                source ./env-setup
+                cd containers
+                docker-compose build database
+                '''
+            }
+        }
+        stage('Build Wordpress'){
+            steps {
+                sh '''
+                source ./env-setup
+                cd containers
+                docker-compose build wordpress
+                '''
+            }
+        }
+        stage('Build Petclinic'){
+            steps {
+                sh '''
+                source ./env-setup
+                cd containers
+                docker-compose build petclinic
+                '''
+            }
+        }
+        stage('Build dbmon'){
+            steps {
+                sh '''
+                source ./env-setup
+                cd containers
+                docker-compose build dbmon
+                '''
+            }
+        }
+        stage('Build Prometheus'){
+            steps {
+                sh '''
+                source ./env-setup
+                cd containers
+                docker-compose build prometheus
+                '''
+            }
+        }
+        stage('Build Grafana'){
+            steps {
+                sh '''
+                source ./env-setup
+                cd containers
+                docker-compose build grafana
+                '''
+            }
+        }
+    }
+}
