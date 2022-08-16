@@ -15,30 +15,30 @@ then
 fi"""
       }
     }
-    stage('Build add or update Moodle configuration') {
+    stage('Build add or update Wordpress configuration') {
       steps {
         sh """cd openshift
 oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
 oc project ${projectName}
-oc apply -f moodle-imagestream.yaml
-oc apply -f moodle-build.yaml
-oc apply -f moodle-data-persistentvolumeclaim.yaml
-oc apply -f moodle-service.yaml
-oc apply -f moodle-route.yaml || echo 'Route already in place'"""
+oc apply -f wordpress-imagestream.yaml
+oc apply -f wordpress-build.yaml
+oc apply -f wordpress-data-persistentvolumeclaim.yaml
+oc apply -f wordpress-service.yaml
+oc apply -f wordpress-route.yaml || echo 'Route already in place'"""
         }
     }
-    stage('Build moodle image') {
+    stage('Build wordpress image') {
       steps {
         sh """oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
-oc start-build moodle"""
+oc start-build wordpress"""
       }
     }
-    stage('Deploy PetcClinic Container To Openshift') {
+    stage('Deploy Wordpress Container To Openshift') {
       steps {
         sh """cd openshift
 oc login https://localhost:8443 --username developer --password developer --insecure-skip-tls-verify=true
 oc project ${projectName}
-oc apply -f moodle-deploymentconfig.yaml"""
+oc apply -f wordpress-deploymentconfig.yaml"""
       }
     }
   }
