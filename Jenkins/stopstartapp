@@ -8,7 +8,7 @@ pipeline {
         )
         choice(
             name: 'Application',
-            choices: ["database","petclinic","wordpress","dbmon","prometheus","grafana"].
+            choices: ["database","petclinic","wordpress","dbmon","prometheus","grafana"],
             description: "Which application do you wish to start or stop?"
         )
     }
