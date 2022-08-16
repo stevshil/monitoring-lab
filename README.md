@@ -78,3 +78,65 @@ This server by default will use the following credentials:
 Databases are installed for the above applications and named:
 * petclinic
 * wordpress
+
+# Clean Up
+
+To clean up the project removing all containers, images and persistent volumes use:
+
+```
+docker-compose down --rmi=all -v
+```
+
+# Individual controls
+
+## Building
+
+```
+docker-compose build <serviceName>
+```
+
+Service name can be found in the docker-compose.yml file, but you have:
+* database
+* wordpress
+* petclinic
+* dbmon
+* grafana
+* prometheus
+
+## Launching containers from fresh
+
+```
+docker-compose up -d [<serviceName>]
+```
+
+Where <serviceName> is optional if you want to launch all
+
+## Remvoing a container
+
+To remove a single container so that you can start completely afresh:
+
+```
+docker rm -f <containerName>
+```
+
+The <containerName> is based on the <serviceName> as we've named them the same.
+
+For the **database** and **prometheus** you'll also need to remove the persistent volume:
+
+```
+docker volume ls
+```
+
+You'll look for db or prom in the name and then use:
+
+```
+docker volume rm <volumeName>
+```
+
+## Starting/Stopping
+
+```
+docker-compose [start|stop] [<serviceName>]
+```
+
+Where <serviceName> is optional if you want to start all of the containers.
