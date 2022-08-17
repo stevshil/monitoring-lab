@@ -45,6 +45,7 @@ RUN wget https://www.dropbox.com/sh/q63dnt8e4b99n0p/AACcQ2U4yRU2EmYpEcUISrr7a/ge
 RUN mkdir -p /opt/itrs/netprobe
 RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
 COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
+RUN rm /tmp/*gz
 
 # Update entrypoint
 RUN sed -i '/exec "$@"/i\# Start Process exporter\n \

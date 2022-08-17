@@ -6,7 +6,6 @@ ENV WORDPRESS_HOST=192.168.10.118:1180
 #RUN update-ca-certificates -f
 RUN apt-get -y update
 RUN apt-get -y install git wget
-RUN apt-get -y install libmysqlclient18 build-essential
 
 RUN git clone https://github.com/spring-projects/spring-petclinic.git /app
 RUN cp /app/src/main/resources/db/mysql/schema.sql /docker-entrypoint-initdb.d/01.sql
@@ -42,6 +41,10 @@ RUN wget https://www.dropbox.com/sh/q63dnt8e4b99n0p/AACcQ2U4yRU2EmYpEcUISrr7a/ge
 RUN mkdir -p /opt/itrs/netprobe
 RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
 COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
+RUN wget https://downloads.mysql.com/archives/get/p/19/file/mysql-connector-c-6.0.2-linux-glibc2.3-x86-64bit.tar.gz -O /tmp/mysql-con.tgz
+RUN cd /tmp && tar xvf mysql-con.tgz
+RUN mv /tmp/mysql-connector-c-6.0.2-linux-glibc2.3-x86-64bit/lib/* /opt/itrs/netprobe/lib64/
+RUN rm -rf /tmp/*gz /tmp/mysql-*
 
 RUN sed -i '/exec "$@"/i\# Start Process exporter\n \
 cd /opt/exporters\n \
