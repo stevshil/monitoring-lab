@@ -7,3 +7,4 @@ tradeapp/itrs/files/new/**
 containers/itrs/file/new/**
 tradeapp/itrs/files/ITRS/*.tgz
 tradeapp/itrs/files/ITRS/*.zip
+**/files/setup/ITRS/old
