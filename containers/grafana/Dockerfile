@@ -1,7 +1,7 @@
 FROM almalinux:8.4
 RUN dnf -y install curl wget epel-release
 RUN dnf -y install https://dl.grafana.com/oss/release/grafana-8.0.6-1.x86_64.rpm
-RUN dnf -y install ansible
+RUN dnf -y install ansible libnsl
 # Activate Admin user
 RUN sed -i 's/^;admin_user = admin/admin_user = admin/' /etc/grafana/grafana.ini
 RUN sed -i 's/^;rendering_ignore_https_errors =.*/rendering_ignore_https_errors = true/' /etc/grafana/grafana.ini
