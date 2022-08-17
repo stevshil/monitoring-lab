@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!--Edited using Gateway Setup Editor version GA5.8.1-210615 at 2022-08-02 09:08:50 by Administrator on EC2AMAZ-8RI616P-->
+<!--Edited using Gateway Setup Editor version GA5.8.1-210615 at 2022-08-17 11:38:42 by Administrator on EC2AMAZ-8RI616P-->
 <!-- Gateway-created setup include file for user ActiveConsole1 at 172.31.23.230 -->
 <gateway compatibility="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.itrsgroup.com/GA5.8.2-210629/gateway.xsd">
 	<types>
 		<type name="Database Checks">
 			<sampler disabled="false" ref="DB Disk Used"/>
+			<sampler ref="TABLE CHECK"/>
 		</type>
 		<type name="ITRSDB">
-			<sampler ref="PC Moodle Tables"/>
+			<sampler ref="PC Wordpress Tables"/>
 			<sampler ref="DB Last Update"/>
 			<sampler ref="Trades Tables"/>
 		</type>
 		<type name="PetClinic Moodle">
-			<sampler ref="PC Moodle Tables"/>
+			<sampler ref="PC Wordpress Tables" disabled="false"/>
 		</type>
 		<type name="Trades DB">
 			<sampler ref="Trades Tables"/>
@@ -20,7 +21,7 @@
 		</type>
 	</types>
 	<samplers>
-		<sampler name="PC Moodle Tables">
+		<sampler name="PC Wordpress Tables">
 			<plugin>
 				<sql-toolkit>
 					<queries>
@@ -36,12 +37,12 @@ from tables where table_schema=&apos;petclinic&apos;;</data>
 						</query>
 						<query>
 							<name>
-								<data>checkmoodletables</data>
+								<data>checkwptables</data>
 							</name>
 							<sql>
 								<data>use information_schema;
 select TABLE_NAME TABLE1, TABLE_NAME TABLE2
-from tables where table_schema=&apos;moodle&apos;;</data>
+from tables where table_schema=&apos;wordpress&apos;;</data>
 							</sql>
 						</query>
 					</queries>
@@ -49,8 +50,11 @@ from tables where table_schema=&apos;moodle&apos;;</data>
 						<database>
 							<mysql>
 								<var-serverName>
-									<data>appdb</data>
+									<data>172.31.28.30</data>
 								</var-serverName>
+								<var-port>
+									<data>3316</data>
+								</var-port>
 							</mysql>
 						</database>
 						<var-userName>
@@ -65,6 +69,88 @@ from tables where table_schema=&apos;moodle&apos;;</data>
 					</connection>
 				</sql-toolkit>
 			</plugin>
+			<dataviews>
+				<dataview name="PetClinicTables">
+					<displayName>PetClinic Tables</displayName>
+					<expectRowsVar>
+						<data>
+							<expectRow>
+								<data>.*</data>
+							</expectRow>
+						</data>
+					</expectRowsVar>
+				</dataview>
+				<dataview name="PCTableCounter">
+					<createOnGateway>
+						<enabled>true</enabled>
+						<firstColumn>TableCounts</firstColumn>
+					</createOnGateway>
+					<additions>
+						<var-headlines>
+							<data>
+								<headline>
+									<data>TableCount</data>
+								</headline>
+							</data>
+						</var-headlines>
+						<var-columns>
+							<data>
+								<column>
+									<data>TableCount</data>
+								</column>
+							</data>
+						</var-columns>
+						<var-rows>
+							<data>
+								<row>
+									<data>TableCount</data>
+								</row>
+							</data>
+						</var-rows>
+					</additions>
+				</dataview>
+				<dataview name="WPTableCounter">
+					<displayName>WordPress Tables</displayName>
+					<expectRowsVar>
+						<data>
+							<expectRow>
+								<data>.*</data>
+							</expectRow>
+						</data>
+					</expectRowsVar>
+					<createOnGateway>
+						<enabled>true</enabled>
+						<firstColumn>TableCounts</firstColumn>
+					</createOnGateway>
+					<additions>
+						<var-headlines>
+							<data>
+								<headline>
+									<data>TableCount</data>
+								</headline>
+							</data>
+						</var-headlines>
+						<var-columns>
+							<data>
+								<column>
+									<data>TableCount</data>
+								</column>
+							</data>
+						</var-columns>
+						<var-rows>
+							<data>
+								<row>
+									<data>TableCount</data>
+								</row>
+							</data>
+						</var-rows>
+					</additions>
+				</dataview>
+			</dataviews>
+			<schemas>
+				<dataviews/>
+			</schemas>
+			<standardisedFormatting/>
 		</sampler>
 		<sampler name="DB Disk Used">
 			<plugin>
@@ -181,6 +267,40 @@ from tables where table_schema=&apos;trades&apos;;</data>
 						</var-userName>
 						<password>
 							<stdAES>+encs+ED2EA8AEF3DE79C954E3C6521F7ED71B</stdAES>
+						</password>
+					</connection>
+				</sql-toolkit>
+			</plugin>
+		</sampler>
+		<sampler name="TABLE CHECK">
+			<plugin>
+				<sql-toolkit>
+					<queries>
+						<query>
+							<name>
+								<data>databases</data>
+							</name>
+							<sql>
+								<data>show databases;</data>
+							</sql>
+						</query>
+					</queries>
+					<connection>
+						<database>
+							<mysql>
+								<var-serverName>
+									<data>172.31.28.30</data>
+								</var-serverName>
+								<var-port>
+									<data>3316</data>
+								</var-port>
+							</mysql>
+						</database>
+						<var-userName>
+							<data>root</data>
+						</var-userName>
+						<password>
+							<stdAES>+encs+8C9C29D67064207FDFD2DEFDE51FA824</stdAES>
 						</password>
 					</connection>
 				</sql-toolkit>
@@ -304,6 +424,50 @@ from tables where table_schema=&apos;trades&apos;;</data>
 						</transaction>
 					</if>
 				</if>
+			</block>
+		</rule>
+		<rule name="PCTableCount">
+			<targets>
+				<target>/geneos/gateway[(@name=&quot;student1&quot;)]/directory/probe[(@name=&quot;database&quot;)]/managedEntity[(@name=&quot;Application Database&quot;)]/sampler[(@name=&quot;PC Wordpress Tables&quot;)][(@type=&quot;PetClinic Moodle&quot;)]/dataview[(@name=&quot;PCTableCounter&quot;)]/rows/row[(@name=&quot;TableCount&quot;)]/cell[(@column=&quot;TableCount&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<pathAliases>
+				<pathAlias name="tablecount">/geneos/gateway/directory/probe[(@name=&quot;database&quot;)]/managedEntity[(@name=&quot;Application Database&quot;)]/sampler[(@name=&quot;PC Wordpress Tables&quot;)][(@type=&quot;PetClinic Moodle&quot;)]/dataview[(@name=&quot;checkpctables&quot;)]/rows/row/cell[(@column=&quot;TABLE2&quot;)]</pathAlias>
+			</pathAliases>
+			<block>
+				<transaction>
+					<update>
+						<property>@value</property>
+						<count>
+							<dataItems>
+								<pathAlias ref="tablecount"/>
+								<property>@value</property>
+							</dataItems>
+						</count>
+					</update>
+				</transaction>
+			</block>
+		</rule>
+		<rule name="WPTableCount">
+			<targets>
+				<target>/geneos/gateway/directory/probe[(@name=&quot;database&quot;)]/managedEntity[(@name=&quot;Application Database&quot;)]/sampler[(@name=&quot;PC Wordpress Tables&quot;)][(@type=&quot;PetClinic Moodle&quot;)]/dataview[(@name=&quot;WPTableCounter&quot;)]/rows/row[(@name=&quot;TableCount&quot;)]/cell[(@column=&quot;TableCount&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<pathAliases>
+				<pathAlias name="tablecount">/geneos/gateway/directory/probe[(@name=&quot;database&quot;)]/managedEntity[(@name=&quot;Application Database&quot;)]/sampler[(@name=&quot;PC Wordpress Tables&quot;)][(@type=&quot;PetClinic Moodle&quot;)]/dataview[(@name=&quot;checkwptables&quot;)]/rows/row/cell[(@column=&quot;TABLE2&quot;)]</pathAlias>
+			</pathAliases>
+			<block>
+				<transaction>
+					<update>
+						<property>@value</property>
+						<count>
+							<dataItems>
+								<pathAlias ref="tablecount"/>
+								<property>@value</property>
+							</dataItems>
+						</count>
+					</update>
+				</transaction>
 			</block>
 		</rule>
 	</rules>

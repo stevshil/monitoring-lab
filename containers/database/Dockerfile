@@ -42,6 +42,8 @@ RUN mkdir -p /opt/itrs/netprobe
 RUN cd /opt/itrs; tar xvf /tmp/geneos-netprobe-5.8.2-linux-x64.tar.gz
 COPY netprobe.conf /etc/ld.so.conf.d/netprobe.conf
 RUN wget https://downloads.mysql.com/archives/get/p/19/file/mysql-connector-c-6.0.2-linux-glibc2.3-x86-64bit.tar.gz -O /tmp/mysql-con.tgz
+# Alternative download if mysql stop it
+# RUN wget https://www.dropbox.com/s/vr5ekd6cptykd23/mysql-connector-c-6.0.2-linux-glibc2.3-x86-64bit.tar.gz?dl=0 -O /tmp/mysql-con.tgz
 RUN cd /tmp && tar xvf mysql-con.tgz
 RUN mv /tmp/mysql-connector-c-6.0.2-linux-glibc2.3-x86-64bit/lib/* /opt/itrs/netprobe/lib64/
 RUN rm -rf /tmp/*gz /tmp/mysql-*
