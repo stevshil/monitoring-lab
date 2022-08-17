@@ -11,6 +11,7 @@ services:
         target: /var/lib/mysql
     ports:
       - ${DB_PORT}:3306
+      - ${DB_NP_PORT}:7036
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_NAME}
@@ -27,6 +28,7 @@ services:
       - DBPASSWORD=${DB_NAME}
     ports:
       - ${PETCLINIC_PORT}:8080
+      - ${PC_NP_PORT}:7036
   wordpress:
     build:
       context: wordpress
@@ -35,6 +37,7 @@ services:
     ports:
       - ${WORDPRESS_PORT}:8001
       - 1280:8080
+      - ${WP_NP_PORT}:7036
     environment:
     - WORDPRESS_DB_USER=root
     - WORDPRESS_DB_PASSWORD=${DB_PASSWORD}
@@ -59,6 +62,7 @@ services:
     ports:
       - ${PROMETHEUS_PORT}:9100
       - ${PROMETHEUS_PORT2}:9090
+      - ${PM_NP_PORT}:7036
   grafana:
     build:
       context: grafana
@@ -66,6 +70,7 @@ services:
     container_name: grafana
     ports:
       - ${GRAFANA_PORT}:3000
+      - ${GF_NP_PORT}:7036
   dbclient:
     build:
       context: dbclient
