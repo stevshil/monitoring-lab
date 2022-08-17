@@ -6,6 +6,7 @@ ENV WORDPRESS_HOST=192.168.10.118:1180
 #RUN update-ca-certificates -f
 RUN apt-get -y update
 RUN apt-get -y install git wget
+RUN apt-get -y install libmysqlclient18 build-essentials
 
 RUN git clone https://github.com/spring-projects/spring-petclinic.git /app
 RUN cp /app/src/main/resources/db/mysql/schema.sql /docker-entrypoint-initdb.d/01.sql
