@@ -32,6 +32,17 @@ COPY disk_usage_exporter.yaml /opt/exporters/disk_usage_exporter.yaml
 RUN sed -i 's, \*:80>, *:8001>,' /etc/apache2/sites-enabled/000-default.conf
 RUN sed -i 's/80/8001/' /etc/apache2/ports.conf
 
+# Set logs to be in the container and to stdout/err
+# RUN rm /var/log/apache2/*
+# RUN sed -i 's,ErrorLog.*,ErrorLog "|/usr/bin/tee ${APACHE_LOG_DIR}/error.log",' /etc/apache2/sites-enabled/000-default.conf
+# RUN sed -i 's,CustomLog.*,CustomLog "|/usr/bin/tee ${APACHE_LOG_DIR}/access.log" combined,' /etc/apache2/sites-enabled/000-default.conf
+# RUN egrep "CustomLog|ErrorLog" /etc/apache2/sites-enabled/000-default.conf
+
+# Not working, but get /server-status url working for apache-exporter
+# COPY 001-status.conf /etc/apache2/sites-enabled/001-status.conf
+# RUN sed -i 's/Require local/#Require local/' /etc/apache2/mods-enabled/status.conf
+
+
 # Ports exposed for app and
 EXPOSE 9100
 EXPOSE 9995
