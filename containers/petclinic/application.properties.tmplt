@@ -36,7 +36,7 @@ logging.level.org.springframework=INFO
 management.endpoint.health.show-details=always
 management.endpoints.web.path-mapping.prometheus=/metrics
 management.endpoints.web.path-mapping.health=status
-management.endpoints.web.exposure.include=prometheus
+management.endpoints.web.exposure.include=health,info,prometheus
 management.metrics.distribution.percentiles-histogram.http.server.requests=true
 
 # Active Spring profiles
