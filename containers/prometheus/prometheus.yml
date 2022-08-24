@@ -30,3 +30,10 @@ scrape_configs:
       - targets: ['dbmon:9104','database:9995','database:9100','database:9256']
         labels:
           group: 'database'
+
+  # Assumes server has /etc/docker/daemon.json with "metrics-addr": "172.13.0.1:9323", "experimental": true
+  - job_name: 'Server'
+    static_configs:
+      - targets: ['172.31.0.1:9323']
+        labels:
+          group: 'Server'

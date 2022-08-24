@@ -84,6 +84,8 @@ To have your Docker daemon monitored by Prometheus you will need to configure yo
 }
 ```
 
+Change **127.0.0.1** for the actual IP of your host that is running the Docker daemon.
+
 In your prometheus.yaml configuration you will need to add the following scraper;
 ```
 scrape_configs:
@@ -91,6 +93,8 @@ scrape_configs:
     static_configs:
       - targets: ['127.0.0.1:9323']
 ```
+
+Changing **127.0.0.1** to the IP address of your Docker server.
 
 Then start a single service;
 ```
