@@ -1,0 +1,11 @@
+modules:
+  http_1xx:
+    prober: http
+  http_2xx:
+    prober: http
+  http_3xx:
+    prober: http
+  http_4xx:
+    prober: http
+  http_5xx:
+    prober: http

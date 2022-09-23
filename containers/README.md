@@ -62,6 +62,16 @@ docker-compose up -d
 
 This will only launch any changed containers.
 
+## Prometheus test
+
+To test the blackbox exporter container exec on to prometheus.  Run the following to check wordpress:
+
+```
+curl 'blackbox:9115/probe?target=wordpress:8001/wp-login.php&module=http_2xx'
+```
+
+For petclinic use **petclinic:8080**
+
 # References
 
 ## Prometheus/Grafana

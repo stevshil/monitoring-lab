@@ -37,3 +37,27 @@ scrape_configs:
       - targets: ['172.31.0.1:9323']
         labels:
           group: 'Server'
+  
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module:
+        - http_1xx
+        - http_2xx
+        - http_3xx
+        - http_4xx
+        - http_5xx
+    static_configs:
+      - targets:
+        - petclinic:8080
+        - wordpress:8001/wp-login.php
+    relabel_configs:
+      - source_labels:
+          - __address__
+        target_label: __param_target
+        replacement: http://$1/
+      - source_labels:
+          - __param_target
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox:9115
